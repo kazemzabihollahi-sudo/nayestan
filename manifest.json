@@ -10,6 +10,12 @@
           "title": "حکایت بقّال و طوطی",
           "titleEn": "The Greengrocer and the Parrot",
           "file": "book1/greengrocer-parrot.json"
+        },
+        {
+          "id": "king-slavegirl",
+          "title": "پادشاه و کنیزک",
+          "titleEn": "The King and the Slave-Girl",
+          "file": "book1/king-slavegirl.json"
         }
       ]
     },
