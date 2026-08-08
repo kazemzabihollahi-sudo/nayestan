@@ -1,4 +1,4 @@
-var CACHE_NAME = 'masnavi-panel-v18';
+var CACHE_NAME = 'masnavi-panel-v19';
 var ASSETS = [
   './',
   './index.html',
