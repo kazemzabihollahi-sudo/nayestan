@@ -1,0 +1,28 @@
+{
+  "books": [
+    {
+      "id": 1,
+      "title": "دفتر اول",
+      "titleEn": "Book One",
+      "stories": [
+        {
+          "id": "king-handmaiden",
+          "title": "حکایت پادشاه و کنیزک",
+          "titleEn": "The Story of the King and the Handmaiden",
+          "file": "book1/king-handmaiden.json"
+        },
+        {
+          "id": "greengrocer-parrot",
+          "title": "حکایت بقّال و طوطی",
+          "titleEn": "The Story of the Greengrocer and the Parrot",
+          "file": "book1/greengrocer-parrot.json"
+        }
+      ]
+    },
+    { "id": 2, "title": "دفتر دوم", "titleEn": "Book Two", "stories": [] },
+    { "id": 3, "title": "دفتر سوم", "titleEn": "Book Three", "stories": [] },
+    { "id": 4, "title": "دفتر چهارم", "titleEn": "Book Four", "stories": [] },
+    { "id": 5, "title": "دفتر پنجم", "titleEn": "Book Five", "stories": [] },
+    { "id": 6, "title": "دفتر ششم", "titleEn": "Book Six", "stories": [] }
+  ]
+}

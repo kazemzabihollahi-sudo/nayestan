@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>نیستان</title>
+<meta name="description" content="برنامه یادگیری تفسیری مثنوی معنوی مولانا">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#3C8C0A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="نیستان">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<style>
+:root{
+  --color-background-primary:#FFFFFF;
+  --color-background-secondary:#F7F7F4;
+  --color-background-tertiary:#EFEFEA;
+  --color-border-secondary:#D8D8D2;
+  --color-border-tertiary:#E4E4DE;
+  --color-text-primary:#1F1F1D;
+  --color-text-secondary:#5B5B55;
+  --color-text-tertiary:#8A8A82;
+  --border-radius-md:10px;
+  --border-radius-lg:14px;
+  --border-radius-xl:18px;
+  --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --font-serif:Georgia,serif;
+  --fs-scale:1;
+}
+html.dark{
+  --color-background-primary:#1C1C1A;
+  --color-background-secondary:#242422;
+  --color-background-tertiary:#151513;
+  --color-border-secondary:#3A3A36;
+  --color-border-tertiary:#2E2E2B;
+  --color-text-primary:#F0F0EC;
+  --color-text-secondary:#B8B8B0;
+  --color-text-tertiary:#88887E;
+  --pur-l:#1A2013;
+  --grn-l:#101C17;
+  --amb-l:#1D160D;
+  --gold-l:#1E1A0B;
+  --ice-l:#0E1620;
+  --tafsir-l:#0E1620;
+  --refl-bg:#191228;
+  --refl-cl:#1D1626;
+  --fire-l:#211410;
+}
+html.dark body{background:var(--color-background-tertiary)}
+html.dark .src-ref.q{color:#6FCB9F}
+html.dark .src-ref.h,html.dark .ext-link.h,html.dark .tref.h{color:#E3A85E}
+html.dark .sbr-hdr-t{color:#E8C670}
+html.dark .freeze-t{color:#6FB3E0}
+html,body{margin:0;padding:0;background:var(--color-background-primary);height:100%;height:-webkit-fill-available;overflow:hidden;position:fixed;inset:0;width:100%}
+body{-webkit-tap-highlight-color:transparent}
+.app{max-width:none!important;border-radius:0!important;border:none!important;height:100vh;height:-webkit-fill-available;height:calc(var(--app-height, 100vh));display:flex;flex-direction:column;background:var(--color-background-primary);padding-top:max(20px, env(safe-area-inset-top));padding-bottom:env(safe-area-inset-bottom);box-sizing:border-box}
+.app .scroll{flex:1 1 auto;height:auto!important;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.app .tbar,.app .bnav{flex-shrink:0}
+</style>
+</head>
+<body>
+<script>
+/* Measure the real visible viewport height in pixels (more reliable across
+   devices/browsers than vh/dvh units) and expose it as --app-height so the
+   app exactly fills the screen with no leftover gap. */
+(function(){
+  function setAppHeight(){
+    var h = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+    document.documentElement.style.setProperty('--app-height', h + 'px');
+  }
+  setAppHeight();
+  window.addEventListener('resize', setAppHeight);
+  window.addEventListener('orientationchange', function(){ setTimeout(setAppHeight, 100); });
+  if(window.visualViewport) window.visualViewport.addEventListener('resize', setAppHeight);
+})();
+</script>
+<script>
+/* localStorage-backed shim for window.storage, so the panel's existing
+   sv()/ld()/rm() calls work unmodified as a standalone web app. */
+(function(){
+  function k(key,shared){ return (shared?'shared:':'priv:')+key; }
+  window.storage = {
+    get: function(key,shared){
+      return new Promise(function(resolve){
+        try{
+          var v = localStorage.getItem(k(key,shared));
+          resolve(v==null?null:{key:key,value:v,shared:!!shared});
+        }catch(e){ resolve(null); }
+      });
+    },
+    set: function(key,value,shared){
+      return new Promise(function(resolve){
+        try{
+          localStorage.setItem(k(key,shared), value);
+          resolve({key:key,value:value,shared:!!shared});
+        }catch(e){ resolve(null); }
+      });
+    },
+    delete: function(key,shared){
+      return new Promise(function(resolve){
+        try{
+          var existed = localStorage.getItem(k(key,shared))!=null;
+          localStorage.removeItem(k(key,shared));
+          resolve({key:key,deleted:existed,shared:!!shared});
+        }catch(e){ resolve(null); }
+      });
+    },
+    list: function(prefix,shared){
+      return new Promise(function(resolve){
+        try{
+          var pre=(shared?'shared:':'priv:')+(prefix||'');
+          var keys=[];
+          for(var i=0;i<localStorage.length;i++){
+            var lk=localStorage.key(i);
+            if(lk.indexOf(pre)===0) keys.push(lk.slice(shared?7:5));
+          }
+          resolve({keys:keys,prefix:prefix,shared:!!shared});
+        }catch(e){ resolve(null); }
+      });
+    }
+  };
+})();
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--f:'Noto Naskh Arabic',var(--font-sans),Tahoma,sans-serif;--serif:'Noto Naskh Arabic',var(--font-serif),Georgia,serif;--pur:#58A700;--pur-l:#EAF8D8;--pur-d:#3C8C0A;--grn:#085041;--grn-l:#E1F5EE;--amb:#633806;--amb-l:#FEF3E8;--gold:#8B6000;--gold-l:#FFF8E8;--ice:#185FA5;--ice-l:#E6F1FB;--fs:calc(16px * var(--fs-scale));--tafsir:#185FA5;--tafsir-l:#E6F1FB;--refl-c:#4C3A8C;--refl-cl:#EAE1FB;--refl-bg:#E7DBFB;--refl-bd:rgba(124,58,237,.18);--fire:#FF6B35;--fire-l:#FFEFE3;--fire-grad:linear-gradient(135deg,#FF9A56,#FF3D2E)}
+body{font-family:var(--f);background:var(--color-background-tertiary);color:var(--color-text-primary)}
+.app{max-width:400px;margin:0 auto;background:var(--color-background-primary);border-radius:var(--border-radius-xl,16px);overflow:hidden;border:0.5px solid var(--color-border-tertiary);position:relative}
+.app *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.app input,.app textarea{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+.allow-copy,.allow-copy *{-webkit-user-select:text!important;user-select:text!important;-webkit-touch-callout:default!important}
+@media print{body{display:none!important}}
+.tbar{height:58px;padding:0 8px;display:flex;align-items:center;justify-content:space-evenly;background:var(--color-background-primary);color:var(--color-text-primary);border-bottom:0.5px solid var(--color-border-tertiary)}
+.tb-brand{display:flex;align-items:center;gap:8px;min-width:0}
+.tb-title{font-size:calc(15px * var(--fs-scale));font-weight:700;letter-spacing:.02em}
+.tb-r{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.tb-pill{display:flex;align-items:center;gap:4px;font-size:calc(13px * var(--fs-scale));font-weight:700;color:var(--color-text-primary);border:none;background:none;border-radius:0;padding:4px 4px;cursor:pointer;font-family:var(--f)}
+.tb-btn{width:28px;height:28px;border-radius:50%;border:none;background:none;color:var(--color-text-primary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:calc(16px * var(--fs-scale));font-family:var(--f);flex-shrink:0}
+.scroll{height:492px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:var(--color-background-secondary)}
+.view{display:none}.view.on{display:block;padding-bottom:16px}
+.bnav{height:58px;background:var(--color-background-primary);display:flex;border-top:0.5px solid var(--color-border-tertiary)}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--color-text-tertiary);cursor:pointer;font-size:calc(9px * var(--fs-scale));font-weight:600;gap:2px;user-select:none;transition:color .15s;font-family:var(--f)}
+.nb.on{color:var(--pur)}.nb-ic{line-height:1;display:flex;align-items:center;justify-content:center}
+.nb.ctr.on{color:var(--gold)}
+.nb.on .nb-ic{background:var(--color-background-secondary);border-radius:10px}
+.nb span{display:none}
+.prog-wrap{padding:10px 14px 6px}
+.prog-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.prog-lbl{font-size:calc(12px * var(--fs-scale));font-weight:500;color:var(--color-text-secondary)}
+.prog-cnt{font-size:calc(12px * var(--fs-scale));font-weight:700;color:var(--pur)}
+.prog-bar{height:8px;border-radius:4px;background:var(--color-border-tertiary);overflow:hidden}
+.prog-fill{height:8px;border-radius:4px;background:var(--pur);transition:width .5s}
+.lcard{margin:10px 12px 0;border-radius:var(--border-radius-xl,16px);overflow:hidden;border:0.5px solid var(--color-border-secondary)}
+.lhdr{padding:14px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;user-select:none}
+.lhdr.open{background:var(--pur-d);cursor:pointer}
+.lhdr.done{background:var(--grn);cursor:pointer}
+.lhdr.locked{background:var(--color-background-secondary)}
+.lhdr:active{opacity:.88}
+.lhi{flex:1;min-width:0}
+.l-ico{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:calc(18px * var(--fs-scale));flex-shrink:0;margin-bottom:8px}
+.lhdr.locked .l-ico{background:var(--color-border-tertiary)}
+.lt{font-size:calc(14px * var(--fs-scale));font-weight:700;color:#fff;line-height:1.4;word-break:break-word;overflow-wrap:break-word}
+.lhdr.locked .lt{color:var(--color-text-tertiary)}
+.lmeta{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap}
+.lbdg{font-size:calc(10px * var(--fs-scale));font-weight:500;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.18);color:rgba(255,255,255,.9)}
+.lhdr.locked .lbdg{background:var(--color-background-primary);color:var(--color-text-tertiary)}
+.lbody{background:var(--color-background-primary);padding:14px}
+.lock-msg{padding:16px;text-align:center;color:var(--color-text-tertiary);font-size:calc(13px * var(--fs-scale));line-height:1.8}
+.complete-btn.done{background:transparent;color:var(--color-text-tertiary);border:0.5px solid var(--color-border-secondary);cursor:default;width:100%;padding:10px 28px;border-radius:20px;font-size:calc(13px * var(--fs-scale));font-weight:700}
+.bookstrip{display:flex;gap:10px;padding:12px 12px 4px;overflow-x:auto}
+.bchip{flex-shrink:0;width:54px;text-align:center}
+.bicon{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:calc(20px * var(--fs-scale));margin:0 auto 4px;background:var(--color-background-secondary);color:var(--color-text-tertiary);border:1px solid var(--color-border-tertiary)}
+.bicon.on{background:var(--pur);color:#fff;border-color:var(--pur-d)}
+.blbl{font-size:calc(9px * var(--fs-scale));color:var(--color-text-tertiary);line-height:1.3}
+.lib-wrap{padding:12px}
+.lib-book{margin-bottom:18px}
+.lib-book-title{font-size:calc(15px * var(--fs-scale));font-weight:700;color:var(--color-text-primary);margin-bottom:8px;padding-bottom:6px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.lib-empty{font-size:calc(12px * var(--fs-scale));color:var(--color-text-tertiary);padding:8px 4px}
+.lib-story-list{display:flex;flex-direction:column}
+.lib-story-row{display:flex;align-items:center;gap:10px;padding:12px 8px;border-bottom:0.5px solid var(--color-border-tertiary);cursor:pointer}
+.lib-story-row:last-child{border-bottom:none}
+.lib-story-n{font-size:calc(12px * var(--fs-scale));font-weight:700;color:var(--pur);flex-shrink:0;min-width:18px}
+.lib-story-t{flex:1;font-size:calc(14px * var(--fs-scale));color:var(--color-text-primary)}
+.lib-story-arrow{color:var(--color-text-tertiary);font-size:calc(16px * var(--fs-scale));flex-shrink:0}
+.storybanner{background:var(--pur);color:#fff;border-radius:var(--border-radius-lg);margin:8px 12px 0;padding:12px 14px}
+.storybanner-sub{font-size:calc(10px * var(--fs-scale));opacity:.8;margin-bottom:2px}
+.storybanner-t{font-size:calc(15px * var(--fs-scale));font-weight:700}
+.lesson-intro{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:12px 14px;margin-bottom:12px;border:0.5px solid var(--color-border-tertiary)}
+.lesson-intro-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;flex-wrap:wrap}
+.lesson-intro-title{font-size:calc(12px * var(--fs-scale));font-weight:700;color:var(--color-text-secondary)}
+.li-verse{font-family:var(--serif);font-size:var(--fs);line-height:2.6;text-align:center;direction:rtl;color:var(--color-text-primary);padding:6px 0;border-bottom:0.5px dashed var(--color-border-tertiary);transition:background .3s}
+.li-verse:last-child{border-bottom:none}
+.li-verse.playing{background:var(--pur-l);border-radius:8px}
+.vcard{background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.vcard:last-child{margin-bottom:0}
+.vc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px}
+.vnum{font-size:calc(10px * var(--fs-scale));font-weight:700;padding:3px 10px;border-radius:20px;background:var(--pur-l);color:var(--pur);border:0.5px solid rgba(83,74,183,.2);flex-shrink:0}
+.vacts{display:flex;gap:5px;flex-shrink:0}
+.va{width:30px;height:30px;border-radius:50%;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:calc(16px * var(--fs-scale));transition:.1s;font-family:var(--f);flex-shrink:0}
+.va:active{transform:scale(.88)}.va.lk{background:#FFF0F5;border-color:#F0A0B5}
+.vtxt{font-family:var(--serif);font-size:var(--fs);line-height:3.3;text-align:center;color:var(--color-text-primary);direction:rtl;padding:4px 0;word-break:break-word;overflow-wrap:break-word}
+.wclk{cursor:pointer;border-radius:4px;transition:background .15s}
+.wclk:hover,.wclk:active{background:var(--pur-l)}
+@keyframes jumpPulse{0%,100%{box-shadow:0 0 0 0 rgba(88,167,0,0)}50%{box-shadow:0 0 0 5px rgba(88,167,0,.4)}}
+.jump-highlight{animation:jumpPulse .8s ease-in-out 3;border-radius:var(--border-radius-lg,14px)}
+.er-r{display:flex;justify-content:center;margin-top:5px}
+.etgl{font-size:calc(10px * var(--fs-scale));font-weight:500;padding:3px 12px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-tertiary);cursor:pointer;font-family:var(--f)}
+.etgl.on{background:var(--pur-l);color:var(--pur);border-color:rgba(83,74,183,.3)}
+.vmean{margin-top:10px;padding:10px 13px;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary)}
+.vmean-tx{font-size:calc(var(--fs) - 2px);line-height:2;color:var(--color-text-secondary);word-break:break-word;overflow-wrap:break-word}
+.src-box{padding:10px 12px;border-radius:var(--border-radius-lg);margin-bottom:6px}
+.src-box.q{border:0.5px solid rgba(8,80,65,.3);background:var(--grn-l)}.src-box.h{border:0.5px solid rgba(99,56,6,.3);background:var(--amb-l)}
+.src-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.src-badge{font-size:calc(10px * var(--fs-scale));font-weight:700;padding:2px 9px;border-radius:20px;color:#fff;flex-shrink:0}
+.src-badge.q{background:var(--grn)}.src-badge.h{background:var(--amb)}
+.src-ref{font-size:calc(11px * var(--fs-scale));font-weight:600;flex:1;min-width:0;word-break:break-word;overflow-wrap:break-word}.src-ref.q{color:var(--grn)}.src-ref.h{color:var(--amb)}
+.ext-link{font-size:calc(11px * var(--fs-scale));font-weight:600;text-decoration:none;padding:3px 10px;border-radius:20px;display:inline-flex;align-items:center;gap:3px;flex-shrink:0}
+.ext-link.q{color:var(--pur);background:var(--pur-l);border:0.5px solid rgba(83,74,183,.3)}
+.ext-link.h{color:var(--amb);background:var(--amb-l);border:0.5px solid rgba(99,56,6,.3)}
+.src-ar{font-family:var(--serif);font-size:calc(13px * var(--fs-scale));line-height:2.4;direction:rtl;color:var(--color-text-primary);margin:4px 0;word-break:break-word;overflow-wrap:break-word}
+.src-note{font-size:calc(11px * var(--fs-scale));line-height:1.7;color:var(--color-text-secondary);word-break:break-word;overflow-wrap:break-word}.src-note.en{direction:ltr;color:var(--color-text-tertiary)}
+.tf-box{color:var(--color-text-primary);background:var(--tafsir-l);border:0.5px solid rgba(24,95,165,.18);font-size:calc(var(--fs) - 2px);line-height:2.1;padding:10px 12px;border-radius:var(--border-radius-lg);word-break:break-word;overflow-wrap:break-word}
+.tref{display:inline-block;font-size:calc(9px * var(--fs-scale));font-weight:700;padding:1px 5px;border-radius:10px;vertical-align:super;cursor:pointer;margin:0 1px;line-height:1.4}
+.tref.q{color:var(--pur);background:var(--pur-l);border:0.5px solid rgba(83,74,183,.3)}
+.tref.h{color:var(--amb);background:var(--amb-l);border:0.5px solid rgba(99,56,6,.3)}
+.refl-card{padding:8px 0;margin-bottom:4px}
+.refl-card:last-child{margin-bottom:0}
+.refl-q{font-size:calc(var(--fs) - 2px);line-height:2.1;color:var(--color-text-primary)}
+.note-sec{margin-top:10px;border-top:0.5px dashed var(--color-border-tertiary);padding-top:10px}
+.note-lbl{font-size:calc(11px * var(--fs-scale));font-weight:600;color:var(--color-text-tertiary);margin-bottom:5px}
+.note-ta{width:100%;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:9px 11px;font-size:calc(13px * var(--fs-scale));line-height:1.8;resize:none;color:var(--color-text-primary);background:var(--color-background-primary);direction:rtl;font-family:var(--f)}
+.note-ta:focus{outline:none;border-color:var(--pur)}
+.note-saved{font-size:calc(10px * var(--fs-scale));color:var(--grn);margin-top:3px;min-height:14px}
+.search-sticky{padding:12px 12px 10px;position:sticky;top:0;background:var(--color-background-secondary);z-index:10;border-bottom:0.5px solid var(--color-border-tertiary)}
+.search-wrap{display:flex;align-items:center;gap:8px;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:9px 13px}
+.search-inp{flex:1;border:none;background:none;font-size:calc(14px * var(--fs-scale));color:var(--color-text-primary);font-family:var(--f);outline:none;direction:rtl;min-width:0}
+.search-inp::placeholder{color:var(--color-text-tertiary)}
+.themes-wrap{padding:10px 12px 0}
+.themes-title{font-size:calc(11px * var(--fs-scale));font-weight:700;color:var(--color-text-tertiary);margin-bottom:7px;text-transform:uppercase;letter-spacing:.06em}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:calc(11px * var(--fs-scale));font-weight:500;padding:5px 12px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer;transition:.12s;word-break:break-word}
+.chip:hover{background:var(--pur-l);color:var(--pur)}.chip.on{background:var(--pur);color:#fff;border-color:var(--pur)}
+.srch-res{padding:8px 10px 0}
+.res-hdr{font-size:calc(11px * var(--fs-scale));font-weight:600;color:var(--color-text-tertiary);padding:6px 2px;display:flex;align-items:center;justify-content:space-between}
+.res-clr{font-size:calc(11px * var(--fs-scale));font-weight:700;color:var(--pur);cursor:pointer;padding:2px 8px;flex-shrink:0}
+.no-res{text-align:center;padding:32px 20px;color:var(--color-text-tertiary);font-size:calc(13px * var(--fs-scale))}
+.vcard-r{background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-secondary);margin-bottom:8px;overflow:hidden}
+.vcard-r-hdr{padding:8px 12px;background:var(--color-background-secondary);border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.vcard-r-n{font-size:calc(10px * var(--fs-scale));font-weight:700;color:var(--pur);flex-shrink:0}
+.vcard-r-body{padding:10px 13px}
+.vcard-r-txt{font-family:var(--serif);font-size:calc(var(--fs) - 2px);line-height:2.8;text-align:center;direction:rtl;color:var(--color-text-primary);word-break:break-word;overflow-wrap:break-word}
+.vcard-r-mn{font-size:calc(11px * var(--fs-scale));color:var(--color-text-tertiary);text-align:center;margin-top:4px;font-style:italic;word-break:break-word;overflow-wrap:break-word}
+.vr-chips{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px}
+.mini-tag{font-size:calc(10px * var(--fs-scale));font-weight:500;padding:2px 8px;border-radius:20px;background:var(--pur-l);color:var(--pur);cursor:pointer;word-break:break-word}
+.vr-acts{display:flex;gap:6px;margin-top:8px}
+.vr-btn{font-size:calc(11px * var(--fs-scale));font-weight:500;padding:5px 12px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:pointer;font-family:var(--f);flex-shrink:0}
+.sbr-card{margin:12px 12px 0;border-radius:var(--border-radius-xl,16px);overflow:hidden;border:0.5px solid rgba(139,96,0,.3)}
+.sbr-hdr{background:var(--gold-l);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid rgba(139,96,0,.2);gap:8px;flex-wrap:wrap}
+.sbr-hdr-t{font-size:calc(13px * var(--fs-scale));font-weight:700;color:var(--gold);flex-shrink:0}.sbr-hdr-d{font-size:calc(10px * var(--fs-scale));color:var(--color-text-tertiary);font-weight:500;min-width:0}
+.sbr-body{padding:16px 14px;background:var(--color-background-primary)}
+.sbr-verse{font-family:var(--serif);font-size:calc(var(--fs) + 1px);line-height:3.2;text-align:center;direction:rtl;color:var(--color-text-primary);margin-bottom:10px;word-break:break-word;overflow-wrap:break-word}
+.sbr-mean{font-size:calc(13px * var(--fs-scale));line-height:1.9;color:var(--color-text-secondary);background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 13px;margin-bottom:10px;border:0.5px solid var(--color-border-tertiary);word-break:break-word;overflow-wrap:break-word}
+.sbr-en{padding:10px 13px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);text-align:center;border:0.5px solid var(--color-border-tertiary);margin-bottom:10px}
+.sbr-en-line{font-size:calc(13px * var(--fs-scale));line-height:1.9;color:var(--color-text-secondary);font-weight:400;word-break:break-word;overflow-wrap:break-word}
+.empty-st{text-align:center;padding:52px 20px;color:var(--color-text-tertiary)}
+.lib-card{margin:10px 12px 0;padding:14px;background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-secondary)}
+.lib-n{font-size:calc(10px * var(--fs-scale));font-weight:700;color:var(--color-text-tertiary);margin-bottom:6px}
+.lib-t{font-family:var(--serif);font-size:calc(var(--fs) - 1px);line-height:2.9;text-align:center;direction:rtl;color:var(--color-text-primary);word-break:break-word;overflow-wrap:break-word}
+.lib-m{font-size:calc(11px * var(--fs-scale));color:var(--color-text-tertiary);text-align:center;margin-top:4px;font-style:italic;word-break:break-word;overflow-wrap:break-word}
+.lib-note{font-size:calc(12px * var(--fs-scale));color:var(--color-text-secondary);background:var(--pur-l);border-radius:var(--border-radius-md);padding:8px 10px;margin-top:8px;line-height:1.8;direction:rtl;word-break:break-word;overflow-wrap:break-word}
+.lib-acts{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
+.lib-btn{font-size:calc(11px * var(--fs-scale));font-weight:500;padding:5px 12px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:pointer;font-family:var(--f)}
+.lib-btn.r{border-color:#F0A0B5;background:#FFF0F5;color:#8B1A4A}
+.note-card{margin:10px 12px 0;background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-secondary);overflow:hidden}
+.note-card-hdr{padding:10px 13px;background:var(--pur-l);border-bottom:0.5px solid rgba(83,74,183,.2);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.note-card-n{font-size:calc(11px * var(--fs-scale));font-weight:700;color:var(--pur);flex-shrink:0}
+.note-card-body{padding:12px 13px}
+.note-card-verse{font-family:var(--serif);font-size:calc(var(--fs) - 3px);line-height:2.4;text-align:center;direction:rtl;color:var(--color-text-secondary);margin-bottom:8px;word-break:break-word;overflow-wrap:break-word}
+.note-card-txt{font-size:calc(13px * var(--fs-scale));line-height:1.9;color:var(--color-text-primary);direction:rtl;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:9px 11px;word-break:break-word;overflow-wrap:break-word}
+.sheet-ov{display:none;position:absolute;inset:0;background:rgba(0,0,0,.4);z-index:50}
+.sheet{position:absolute;bottom:0;left:0;right:0;background:var(--color-background-primary);border-radius:16px 16px 0 0;z-index:51;border-top:0.5px solid var(--color-border-secondary);display:none;max-height:92%;overflow-y:auto}
+.sheet-handle{width:36px;height:4px;border-radius:2px;background:var(--color-border-secondary);margin:10px auto 0}
+.sheet-hdr{padding:14px 16px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--color-border-tertiary);position:sticky;top:0;background:var(--color-background-primary);z-index:1}
+.sheet-title{font-size:calc(15px * var(--fs-scale));font-weight:700;color:var(--color-text-primary)}
+.sheet-cl{font-size:calc(18px * var(--fs-scale));cursor:pointer;color:var(--color-text-tertiary);background:none;border:none;font-family:var(--f)}
+.sheet-body{padding:16px}
+.streak-tabs{display:flex;gap:8px;margin-bottom:12px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.stab{padding:8px 4px;font-size:calc(12px * var(--fs-scale));font-weight:700;color:var(--color-text-tertiary);cursor:pointer;border-bottom:2px solid transparent}
+.stab.on{color:var(--pur);border-color:var(--pur)}
+.streak-hero{text-align:center;padding:8px 0 4px}
+.streak-hero-fire{font-size:calc(44px * var(--fs-scale));line-height:1}
+.streak-hero-n{font-size:calc(38px * var(--fs-scale));font-weight:800;color:var(--color-text-primary);line-height:1;margin-top:2px}
+.streak-hero-l{font-size:calc(13px * var(--fs-scale));color:var(--color-text-tertiary);font-weight:600;margin-top:2px}
+.perfect-msg{background:var(--gold-l);border:0.5px solid rgba(139,96,0,.2);border-radius:var(--border-radius-lg);padding:10px 12px;font-size:calc(12px * var(--fs-scale));line-height:1.7;color:var(--color-text-primary);margin:10px 0;text-align:center}
+.month-nav{display:flex;align-items:center;justify-content:space-between;margin:14px 0 10px}
+.mnav-btn{width:30px;height:30px;border-radius:50%;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);font-size:calc(16px * var(--fs-scale));cursor:pointer}
+.mnav-t{font-size:calc(14px * var(--fs-scale));font-weight:700;color:var(--color-text-primary)}
+.month-stats{display:flex;gap:10px;margin-bottom:12px}
+.mstat{flex:1;display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary)}
+.mstat-ic{font-size:calc(18px * var(--fs-scale))}
+.mstat-n{font-size:calc(16px * var(--fs-scale));font-weight:800;color:var(--color-text-primary)}
+.mstat-l{font-size:calc(10px * var(--fs-scale));color:var(--color-text-tertiary);font-weight:600}
+.cal-hdr{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px;direction:ltr}
+.cal-day-lbl{font-size:calc(9px * var(--fs-scale));font-weight:700;text-align:center;color:var(--color-text-tertiary)}
+.month-grid{margin-bottom:14px;direction:ltr}
+.cal-week{display:flex;margin-bottom:4px}
+.cal-week.chain{gap:0}
+.cal-week:not(.chain){gap:4px}
+.cd2{flex:1;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:calc(11px * var(--fs-scale));font-weight:700;color:var(--fire);background:var(--fire-l);border:0.5px solid rgba(255,107,53,.15);position:relative;border-radius:6px}
+.cal-week.chain .cd2{border-radius:0;border-color:transparent}
+.cal-week.chain .cd2:first-child{border-radius:8px 0 0 8px}
+.cal-week.chain .cd2:last-child{border-radius:0 8px 8px 0}
+.cal-week.chain .cd2.done{background:var(--fire-grad);color:#fff}
+.cd2.today{box-shadow:0 0 0 2px var(--pur) inset}
+.cd2.empty{background:transparent;border:none}
+.freeze-badge{position:absolute;top:-7px;left:50%;transform:translateX(-50%);font-size:calc(11px * var(--fs-scale))}
+.goal-title{font-size:calc(13px * var(--fs-scale));font-weight:700;color:var(--color-text-primary);margin:14px 0 8px}
+.goal-bar-wrap{margin-bottom:14px}
+.goal-bar-track{height:8px;border-radius:4px;background:var(--color-border-tertiary);overflow:hidden;margin-bottom:8px}
+.goal-bar-fill{height:8px;background:var(--fire-grad)}
+.goal-markers{display:flex;justify-content:space-between}
+.goal-marker{display:flex;flex-direction:column;align-items:center;font-size:calc(14px * var(--fs-scale));color:var(--color-text-tertiary)}
+.goal-marker.passed{color:var(--fire)}
+.goal-marker span{font-size:calc(10px * var(--fs-scale));font-weight:700;margin-top:2px}
+.charity-note{font-size:calc(11px * var(--fs-scale));line-height:1.7;color:var(--color-text-secondary);background:var(--gold-l);border:0.5px solid rgba(139,96,0,.2);border-radius:var(--border-radius-md);padding:9px 11px;margin-bottom:10px}
+.freeze-row{display:flex;align-items:center;gap:10px;padding:12px;background:var(--ice-l);border-radius:var(--border-radius-lg);border:0.5px solid rgba(24,95,165,.25);margin-bottom:10px}
+.freeze-t{font-size:calc(13px * var(--fs-scale));font-weight:700;color:var(--ice)}.freeze-s{font-size:calc(11px * var(--fs-scale));color:var(--color-text-tertiary);margin-top:2px}
+.frz-btn{font-size:calc(12px * var(--fs-scale));font-weight:700;padding:7px 14px;border-radius:20px;border:none;cursor:pointer;font-family:var(--f);white-space:nowrap}
+.frz-btn.buy{background:var(--pur);color:#fff}
+.frz-btn:disabled{background:var(--color-background-secondary);color:var(--color-text-tertiary);border:0.5px solid var(--color-border-secondary);cursor:default}
+.notif-row{padding:12px;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary)}
+.notif-t{font-size:calc(12px * var(--fs-scale));font-weight:700;color:var(--color-text-primary);margin-bottom:4px}
+.notif-s{font-size:calc(11px * var(--fs-scale));color:var(--color-text-tertiary);line-height:1.7;margin-bottom:8px}
+.notif-btn{width:100%;padding:9px;border-radius:20px;background:var(--pur-d);color:#fff;border:none;font-size:calc(13px * var(--fs-scale));font-weight:700;cursor:pointer;font-family:var(--f)}
+.pts-hero{text-align:center;padding:16px 0 14px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:14px}
+.pts-hero-n{font-size:calc(44px * var(--fs-scale));font-weight:700;color:var(--pur);line-height:1}
+.pts-hero-l{font-size:calc(13px * var(--fs-scale));font-weight:500;color:var(--color-text-tertiary);margin-top:5px}
+.earn-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.earn-row:last-child{border-bottom:none}
+.earn-ic{font-size:calc(20px * var(--fs-scale));flex-shrink:0}.earn-t{font-size:calc(12px * var(--fs-scale));font-weight:500;color:var(--color-text-primary);flex:1}.earn-v{font-size:calc(12px * var(--fs-scale));font-weight:700;color:var(--pur)}
+.pkg-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px}
+.pkg{padding:12px 8px;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);text-align:center;cursor:pointer}
+.pkg-ic{font-size:calc(22px * var(--fs-scale));margin-bottom:4px}.pkg-pts{font-size:calc(15px * var(--fs-scale));font-weight:700;color:var(--pur)}.pkg-price{font-size:calc(11px * var(--fs-scale));font-weight:700;color:var(--grn);margin-top:2px}
+.refer-row{display:flex;align-items:center;gap:12px;padding:12px;background:var(--grn-l);border-radius:var(--border-radius-lg);border:0.5px solid rgba(8,80,65,.2);margin-bottom:10px}
+.refer-t{font-size:calc(13px * var(--fs-scale));font-weight:700;color:var(--grn)}.refer-s{font-size:calc(11px * var(--fs-scale));color:var(--color-text-tertiary);margin-top:2px}
+.refer-btn{font-size:calc(12px * var(--fs-scale));font-weight:700;padding:8px 16px;border-radius:20px;background:var(--grn);color:#fff;border:none;cursor:pointer;font-family:var(--f);white-space:nowrap}
+.sp-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:0.5px solid var(--color-border-tertiary);gap:8px}
+.sp-row:last-child{border-bottom:none;padding-bottom:0}
+.sp-row.col{flex-direction:column;align-items:stretch;gap:8px}
+.sp-lbl{font-size:calc(13px * var(--fs-scale));font-weight:500;color:var(--color-text-primary)}
+.seg{display:flex;border:0.5px solid var(--color-border-secondary);border-radius:20px;overflow:hidden;font-size:calc(12px * var(--fs-scale))}
+.seg button{padding:5px 13px;background:none;border:none;color:var(--color-text-tertiary);cursor:pointer;font-family:var(--f);font-weight:500}
+.seg button.on{background:var(--pur-d);color:#fff;font-weight:700}
+.szc{display:flex;align-items:center;gap:8px}
+.szb{width:28px;height:28px;border-radius:50%;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);cursor:pointer;font-size:calc(16px * var(--fs-scale));display:flex;align-items:center;justify-content:center;color:var(--color-text-secondary);font-family:var(--f)}
+.szv{font-size:calc(13px * var(--fs-scale));font-weight:700;color:var(--color-text-primary);width:28px;text-align:center}
+.imp-ta{width:100%;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:10px 12px;font-size:calc(11px * var(--fs-scale));resize:none;color:var(--color-text-primary);background:var(--color-background-primary);direction:ltr;font-family:monospace;height:80px;margin-bottom:10px}
+.imp-ta:focus{outline:none;border-color:var(--pur)}
+.btn-p{width:100%;padding:11px;border-radius:20px;background:var(--pur-d);color:#fff;border:none;font-size:calc(14px * var(--fs-scale));font-weight:700;cursor:pointer;font-family:var(--f)}
+.btn-p:disabled{opacity:.4;cursor:not-allowed}
+.btn-danger{width:100%;padding:9px;border-radius:20px;background:#FFF0F0;color:#A02020;border:1px solid #E0A0A0;font-size:calc(12px * var(--fs-scale));font-weight:600;cursor:pointer;font-family:var(--f);margin-top:6px}
+.imp-err{font-size:calc(12px * var(--fs-scale));color:#8B1A4A;margin-top:5px;text-align:center;min-height:16px}
+.imp-ok{font-size:calc(12px * var(--fs-scale));color:var(--grn);margin-top:5px;text-align:center;min-height:16px;font-weight:600}
+.dbg-box{font-size:calc(11px * var(--fs-scale));color:var(--color-text-secondary);background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:8px 10px;margin-top:8px;line-height:1.8;word-break:break-word}
+.ref-pop{background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-xl,16px);padding:13px;margin:10px 0;direction:rtl;box-sizing:border-box;max-width:100%}
+.ref-pop-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px}
+.rp-top-l{display:flex;align-items:center;gap:7px;flex-wrap:wrap;min-width:0;flex:1}
+.rp-top-r{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.rp-link-row{margin-bottom:8px}
+.rp-close{font-size:calc(14px * var(--fs-scale));cursor:pointer;color:var(--color-text-tertiary);font-family:var(--f);flex-shrink:0}
+.rp-ref{font-size:calc(11px * var(--fs-scale));font-weight:500;color:var(--color-text-tertiary);word-break:break-word}
+.rp-timer{font-size:calc(10px * var(--fs-scale));font-weight:700;color:var(--pur);flex-shrink:0}
+.rp-ar{font-family:var(--serif);font-size:calc(13px * var(--fs-scale));line-height:2.2;direction:rtl;margin:5px 0;color:var(--color-text-primary);word-break:break-word;overflow-wrap:break-word}
+.rp-note{font-size:calc(11px * var(--fs-scale));line-height:1.7;color:var(--color-text-secondary);word-break:break-word;overflow-wrap:break-word}
+.toast{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);background:var(--color-text-primary);color:var(--color-background-primary);padding:8px 18px;border-radius:20px;font-size:calc(12px * var(--fs-scale));font-weight:700;white-space:nowrap;opacity:0;transition:opacity .25s;pointer-events:none;z-index:100;max-width:90%;text-align:center}
+.toast.on{opacity:1}
+.ntabs{display:flex;gap:8px;padding:12px 14px 4px}
+.ntab{flex:1;padding:9px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-tertiary);font-size:calc(12px * var(--fs-scale));font-weight:700;cursor:pointer;font-family:var(--f)}
+.ntab.on{background:var(--pur-d);color:#fff;border-color:var(--pur-d)}
+.daily-note-editor{padding:2px 14px 4px}
+.prof-avatar{width:64px;height:64px;border-radius:50%;background:var(--pur-l);color:var(--pur);display:flex;align-items:center;justify-content:center;font-size:calc(26px * var(--fs-scale));font-weight:700;margin:0 auto 10px}
+.prof-name-inp{width:100%;text-align:center;border:0.5px solid var(--color-border-secondary);border-radius:20px;padding:8px 14px;font-size:calc(14px * var(--fs-scale));color:var(--color-text-primary);background:var(--color-background-primary);font-family:var(--f)}
+.sub-tier-card{padding:12px 14px;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);cursor:pointer;margin-bottom:8px}
+.sub-tier-card.on{border-color:var(--pur);background:var(--pur-l);cursor:default}
+.sub-tier-card:last-child{margin-bottom:0}
+.sub-tier-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}
+.sub-tier-name{font-size:calc(13px * var(--fs-scale));font-weight:700;color:var(--color-text-primary)}
+.sub-tier-badge{font-size:calc(10px * var(--fs-scale));font-weight:700;padding:2px 9px;border-radius:20px;background:var(--pur);color:#fff}
+.sub-tier-price{font-size:calc(11px * var(--fs-scale));font-weight:700;color:var(--pur)}
+.sub-tier-desc{font-size:calc(11px * var(--fs-scale));color:var(--color-text-tertiary);line-height:1.6}
+.fam-code-inp{width:100%;text-transform:uppercase;text-align:center;letter-spacing:3px;font-weight:700;border:0.5px solid var(--color-border-secondary);border-radius:20px;padding:9px 14px;font-size:calc(15px * var(--fs-scale));color:var(--color-text-primary);background:var(--color-background-primary);font-family:var(--f);margin-bottom:8px}
+.menu-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);margin-bottom:10px;cursor:pointer}
+.menu-row-l{display:flex;align-items:center;gap:10px;font-size:calc(14px * var(--fs-scale));font-weight:600;color:var(--color-text-primary)}
+.menu-row-arrow{font-size:calc(16px * var(--fs-scale));color:var(--color-text-tertiary)}
+.profile-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;cursor:pointer;font-size:calc(13px * var(--fs-scale));font-weight:700;color:var(--pur)}
+.fb-select{width:100%;border:0.5px solid var(--color-border-secondary);border-radius:20px;padding:9px 14px;font-size:calc(13px * var(--fs-scale));color:var(--color-text-primary);background:var(--color-background-primary);font-family:var(--f);margin-bottom:14px}
+.fb-crumb{font-size:calc(11px * var(--fs-scale));color:var(--pur);font-weight:700;margin-bottom:6px;letter-spacing:.03em}
+.fb-title{font-size:calc(18px * var(--fs-scale));font-weight:800;color:var(--color-text-primary);margin-bottom:16px}
+.time-inp{width:100%;border:0.5px solid var(--color-border-secondary);border-radius:20px;padding:9px 14px;font-size:calc(14px * var(--fs-scale));color:var(--color-text-primary);background:var(--color-background-primary);font-family:var(--f);margin-top:8px;direction:ltr;text-align:center}
+.page-progress{font-size:calc(11px * var(--fs-scale));color:var(--color-text-tertiary);font-weight:700;margin-bottom:10px;text-align:center}
+.page-timer-bar{position:sticky;bottom:0;background:var(--color-background-primary);margin-top:14px;padding:10px 0 2px;border-top:0.5px dashed var(--color-border-tertiary);z-index:2}
+.page-timer-track{height:5px;border-radius:3px;background:var(--color-border-tertiary);overflow:hidden;margin-bottom:8px}
+.page-timer-fill{height:5px;background:var(--pur);transition:width 1s linear}
+.page-timer-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.page-timer-txt{font-size:calc(12px * var(--fs-scale));font-weight:700;color:var(--color-text-secondary);flex-shrink:0}
+.page-cont-btn{width:auto;padding:9px 20px;font-size:calc(13px * var(--fs-scale))}
+</style>
+
+<div class="app" id="app" dir="rtl">
+<div class="tbar">
+  <div class="tb-btn" onclick="gT('liked')" title="لایک‌ها">❤️</div>
+  <div class="tb-btn" onclick="gT('notes')" title="یادداشت‌ها">📝</div>
+  <div class="tb-pill gem" onclick="openSheet('pts')">💎 <span id="pts-num">0</span></div>
+  <div class="tb-pill fire" onclick="openSheet('streak')">🔥 <span id="streak-num">0</span></div>
+  <div class="tb-btn" onclick="openSheet('settings')">⚙️</div>
+</div>
+<div class="scroll" id="SA">
+  <div class="view on" id="vw-read"></div>
+  <div class="view" id="vw-search"></div>
+  <div class="view" id="vw-sbr"></div>
+  <div class="view" id="vw-refl"></div>
+  <div class="view" id="vw-quran"></div>
+  <div class="view" id="vw-hadith"></div>
+  <div class="view" id="vw-liked"></div>
+  <div class="view" id="vw-notes"></div>
+</div>
+<div class="bnav">
+  <div class="nb on" id="nb-read" onclick="openReadTab()"><div class="nb-ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" stroke="currentColor" stroke-width="0.5" stroke-linejoin="round" style="color:#58CC02"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><rect x="11.2" y="6.4" width="1.6" height="12" fill="currentColor" opacity=".5"/></svg></div><span id="nbl-read">مطالعه</span></div>
+  <div class="nb" id="nb-search" onclick="gT('search')"><div class="nb-ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" style="color:#8B96A5"><circle cx="10" cy="10" r="5.5"/><line x1="14.2" y1="14.2" x2="19.6" y2="19.6"/></svg></div><span id="nbl-search">جستجو</span></div>
+  <div class="nb ctr" id="nb-sbr" onclick="gT('sbr')"><div class="nb-ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" stroke="none" style="color:#FFC800"><rect x="5.2" y="16" width="13.6" height="2.8" rx="0.8"/><path d="M5.2,16 L6.8,7.2 L9.6,12 L12,5.6 L14.4,12 L17.2,7.2 L18.8,16 Z"/><circle cx="6.8" cy="7.2" r="1.3" fill="#fff" opacity=".85"/><circle cx="12" cy="5.6" r="1.5" fill="#fff" opacity=".85"/><circle cx="17.2" cy="7.2" r="1.3" fill="#fff" opacity=".85"/></svg></div><span id="nbl-sbr">شاه بیت</span></div>
+  <div class="nb" id="nb-refl" onclick="gT('refl')"><div class="nb-ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" stroke="none" style="color:#CE82FF"><path d="M12,18.8 C5.2,14 5.2,7.6 9.2,6.8 C10.8,6.4 12,7.6 12,8.8 C12,7.6 13.2,6.4 14.8,6.8 C18.8,7.6 18.8,14 12,18.8 Z"/><path d="M12,1.2 C14,3.2 14,5.2 12,7.2 C10,5.2 10,3.2 12,1.2 Z" opacity=".85"/></svg></div><span id="nbl-refl">تدبر</span></div>
+  <div class="nb" id="nb-quran" onclick="gT('quran')"><div class="nb-ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" stroke="currentColor" stroke-width="0.5" stroke-linejoin="round" style="color:#1CB0F6"><path d="M3.2,8 C6.4,6.8 8.8,6.8 11.2,8 L11.2,18.4 C8.8,17.4 6.4,17.4 3.2,18.4 Z"/><path d="M20.8,8 C17.6,6.8 15.2,6.8 12.8,8 L12.8,18.4 C15.2,17.4 17.6,17.4 20.8,18.4 Z"/><path d="M14,2.8 A2.6,2.6 0 1,1 10.4,2.92 A1.92,1.92 0 1,0 14,2.8 Z"/></svg></div><span id="nbl-quran">قرآن</span></div>
+  <div class="nb" id="nb-hadith" onclick="gT('hadith')"><div class="nb-ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="3" style="color:#FF9600"><ellipse cx="8.4" cy="12" rx="4.4" ry="3" transform="rotate(-18 8.4 12)"/><ellipse cx="15.6" cy="12" rx="4.4" ry="3" transform="rotate(18 15.6 12)"/></svg></div><span id="nbl-hadith">حدیث</span></div>
+</div>
+<div class="sheet-ov" id="sh-ov" onclick="closeSheet()"></div>
+<div class="sheet" id="sh-streak"><div class="sheet-handle"></div><div class="sheet-hdr"><span class="sheet-title" id="sh-streak-t">🔥 استریک و تقویم</span><button class="sheet-cl" onclick="closeSheet()">✕</button></div><div class="sheet-body" id="sh-streak-body"></div></div>
+<div class="sheet" id="sh-pts"><div class="sheet-handle"></div><div class="sheet-hdr"><span class="sheet-title" id="sh-pts-t">💎 امتیازات</span><button class="sheet-cl" onclick="closeSheet()">✕</button></div><div class="sheet-body" id="sh-pts-body"></div></div>
+<div class="sheet" id="sh-profile"><div class="sheet-handle"></div><div class="sheet-hdr"><button class="sheet-cl" onclick="openSheet('settings')" title="بازگشت">→</button><span class="sheet-title" id="sh-prof-t">👤 پروفایل کاربری</span><button class="sheet-cl" onclick="closeSheet()">✕</button></div><div class="sheet-body" id="sh-profile-body"></div></div>
+<div class="sheet" id="sh-unlock"><div class="sheet-handle"></div><div class="sheet-hdr"><span class="sheet-title" id="sh-unlock-t">🔑 کد دسترسی</span><button class="sheet-cl" onclick="closeSheet()">✕</button></div><div class="sheet-body" id="sh-unlock-body"></div></div>
+<div class="sheet" id="sh-settings">
+  <div class="sheet-handle"></div>
+  <div class="sheet-hdr"><span class="sheet-title" id="sh-set-t">⚙️ تنظیمات</span><button class="sheet-cl" onclick="closeSheet()">✕</button></div>
+  <div class="sheet-body">
+    <button class="btn-p" style="margin-bottom:14px" onclick="openSheet('profile')" id="prof-open-btn">👤 پروفایل کاربری</button>
+    <div class="sp-row"><span class="sp-lbl" id="ll">🌐 زبان</span><div class="seg"><button class="on" id="bfa" onclick="sL('fa')">فارسی</button><button id="ben" onclick="sL('en')">English</button></div></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+</div>
+
+<script>
+var verses=[],lessons=[],userData={},prefs={lang:'fa',theme:0,fs:16};
+var streakData={streak:0,last:'',history:[],done:[],freezes:0,frozenDays:[],milestonesAwarded:[],dailyPts:{}};
+var STREAK_PTS_GOAL=10;
+var curTab='read',noteTimers={},hasContent=false,refMap={},loadedFrom='';
+var curQ='',curThm='',srchTimer=null,curNoteTab='verse',curReflTab='today',curQuranTab='today',curHadithTab='today',searchPaid=false;
+var dailyNotes={},feedbackLog=[],showCheckout=false,extraSBRVerse=null,extraReflPick=null,extraQuranPick=null,extraHadithPick=null,unlockCtx=null,focusedLesson=null;
+var svYear=null,svMonth=null,streakTab='personal',profileView='main';
+var lessonPageState={};
+var popupTimer=null,popupKey=null;
+var APP_STORE_URL='',PLAY_STORE_URL='';
+var verseAudioEl=null,verseAudioN=null;
+var lessonAudioQueue=[],lessonAudioIdx=0,lessonAudioLi=null,lessonAudioEl=null;
+var CK='msn_content',UK='msn_u9',PK='msn_p9',SK='msn_s9',RK='msn_r1',DK='msn_dn1',FK='msn_fb1';
+var CONTENT_BASE='content/';
+var MANIFEST_URL=CONTENT_BASE+'manifest.json';
+var manifest=null,currentBookId=null,currentStoryId=null;
+var refData={studied:{},pointed:{},log:[],pageAwarded:{},popupAwarded:{},quranLog:[],hadithLog:[],sbrLog:[],purchasedContent:{}};
+var PT_VERSE=2,PT_QH=3,PT_TAFSIR=4,PT_REFL=5,PT_POPUP=3,PT_LESSON=14,PT_WELCOME=114,PT_FREEZE=114,PT_REFER=40,PT_SBR=20,PT_SEARCH=50,PREMIUM_PRICE=114,FAM_SEATS=3;
+var STREAK_BONUS={7:14,30:72,100:314};
+var WPM_NORMAL=140,WPM_REFL=114,MIN_SECONDS=5;
+var ALL_VIEWS=['read','search','sbr','refl','quran','hadith','liked','notes'];
+var NAV_TABS=['read','search','sbr','refl','quran','hadith'];
+
+function E(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function A(s){return E(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function hl(s,q){var esc=E(s);if(!q)return esc;var qq=String(q).trim();if(!qq)return esc;try{var re=buildHlRegex(qq);if(!re)return esc;return esc.replace(re,'<mark style="background:#FFE066;color:#1a1a1a;border-radius:3px;padding:0 1px">$1</mark>');}catch(e){return esc;}}
+function buildHlRegex(qq){
+  if(!qq)return null;
+  var HAR='[\\u064B-\\u065F\\u0670\\u06D6-\\u06ED\\u200c\\u200f\\u200e]*';
+  var LETTER_CLASS={'ا':'[اأإآٱ]','أ':'[اأإآٱ]','إ':'[اأإآٱ]','آ':'[اأإآٱ]','ٱ':'[اأإآٱ]','ی':'[یي]','ي':'[یي]','ک':'[کك]','ك':'[کك]','ة':'[ةه]','ه':'[ةه]'};
+  var chars=qq.split('');
+  var parts=[];
+  chars.forEach(function(ch){
+    var piece;
+    if(/\s/.test(ch)){piece='[\\s\\u200c]+';}
+    else if(LETTER_CLASS[ch]){piece=LETTER_CLASS[ch];}
+    else{piece=ch.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+    parts.push(piece);
+  });
+  if(!parts.length)return null;
+  return new RegExp('('+parts.join(HAR)+')','gi');
+}
+function $(i){return document.getElementById(i);}
+function H(i,h){var e=$(i);if(e)e.innerHTML=h;}
+function setText(id,txt){var e=$(id);if(e)e.textContent=txt;}
+function toast(m,dur){var t=$('toast');t.textContent=m;t.className='toast on';setTimeout(function(){t.className='toast';},dur||2200);}
+function isPremium(){return (prefs.subscription||'basic')=='premium';}
+function isContentUnlocked(n,type){if(isPremium())return true;return!!(refData.purchasedContent&&refData.purchasedContent[n+'_'+type]);}
+function countWordsText(s){return String(s||'').trim().split(/\s+/).filter(Boolean).length;}
+function secondsForWords(n,wpm){return Math.max(MIN_SECONDS,Math.round(n/wpm*60));}
+function lockCard(desc){var F=prefs.lang=='fa';return '<div class="empty-st"><div style="font-size:calc(44px * var(--fs-scale));margin-bottom:10px">🔒</div><div style="font-size:calc(14px * var(--fs-scale));font-weight:600;color:var(--color-text-secondary);margin-bottom:6px">'+(F?'ویژهٔ اشتراک پریمیوم':'Premium feature')+'</div><div style="font-size:calc(12px * var(--fs-scale));color:var(--color-text-tertiary);line-height:1.8;margin-bottom:14px">'+(desc||'')+'</div><button class="btn-p" style="max-width:240px;margin:0 auto" onclick="openSheet(\'profile\')">'+(F?'🚀 ارتقا به پریمیوم':'🚀 Upgrade to Premium')+'</button></div>';}
+function genCode(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';var s='';for(var i=0;i<6;i++)s+=c[Math.floor(Math.random()*c.length)];return s;}
+function gen4Digit(){return String(Math.floor(1000+Math.random()*9000));}
+function div_(a,b){return Math.floor(a/b);}
+function gregorianToJalali(gy,gm,gd){var g_d_m=[0,31,59,90,120,151,181,212,243,273,304,334];var gy2=(gm>2)?(gy+1):gy;var days=355666+(365*gy)+div_(gy2+3,4)-div_(gy2+99,100)+div_(gy2+399,400)+gd+g_d_m[gm-1];var jy=-1595+(33*div_(days,12053));days%=12053;jy+=4*div_(days,1461);days%=1461;if(days>365){jy+=div_(days-1,365);days=(days-1)%365;}var jm,jd;if(days<186){jm=1+div_(days,31);jd=1+(days%31);}else{jm=7+div_(days-186,30);jd=1+((days-186)%30);}return[jy,jm,jd];}
+function isJalaliLeap(jy){var r=((jy+38)*682)%2816;return r<682;}
+function jalaliMonthLength(jy,jm){if(jm<=6)return 31;if(jm<=11)return 30;return isJalaliLeap(jy)?30:29;}
+function jalaliToGregorian(jy,jm,jd){jy+=1595;var days=-355668+(365*jy)+(div_(jy,33)*8)+div_(((jy%33)+3),4)+jd+((jm<7)?(jm-1)*31:((jm-7)*30)+186);var gy=400*div_(days,146097);days%=146097;if(days>36524){gy+=100*div_(--days,36524);days%=36524;if(days>=365)days++;}gy+=4*div_(days,1461);days%=1461;if(days>365){gy+=div_(days-1,365);days=(days-1)%365;}var gd=days+1;var isLeapG=(gy%4===0&&gy%100!==0)||(gy%400===0);var sal_a=[0,31,isLeapG?29:28,31,30,31,30,31,31,30,31,30,31];var gm;for(gm=1;gm<=12;gm++){if(gd<=sal_a[gm])break;gd-=sal_a[gm];}return[gy,gm,gd];}
+
+async function sv(k,v,shared){try{if(window.storage)await window.storage.set(k,JSON.stringify(v),!!shared);}catch(e){}}
+async function ld(k,shared){try{if(window.storage){var r=await window.storage.get(k,!!shared);if(r&&r.value)return JSON.parse(r.value);}return null;}catch(e){return null;}}
+async function rm(k){try{if(window.storage)await window.storage.delete(k);}catch(e){}}
+
+function getPts(){return userData.points||0;}
+function addPts(n,src){userData.points=(userData.points||0)+n;if(src==='purchase')userData.totalPurchased=(userData.totalPurchased||0)+n;else userData.totalEarned=(userData.totalEarned||0)+n;sv(UK,userData);setText('pts-num',getPts());if(src!=='purchase'){if(!streakData.dailyPts)streakData.dailyPts={};var today=todayStr();streakData.dailyPts[today]=(streakData.dailyPts[today]||0)+n;sv(SK,streakData);checkStreakProgress();}}
+function checkStreakProgress(){var today=todayStr();if(streakData.last===today)return;var pts=(streakData.dailyPts&&streakData.dailyPts[today])||0;if(pts>=STREAK_PTS_GOAL){updateStreak();}}
+function spendPts(n){if(getPts()<n)return false;userData.points=getPts()-n;sv(UK,userData);setText('pts-num',getPts());return true;}
+
+function sL(l){prefs.lang=l;setClass('bfa',l=='fa'?'on':'');setClass('ben',l=='en'?'on':'');$('app').setAttribute('dir',l=='fa'?'rtl':'ltr');sv(PK,prefs);applyLangText();renderCur();}
+function setClass(id,cls){var e=$(id);if(e)e.className=cls;}
+function setTheme(t){prefs.theme=t;setClass('blt',t==0?'on':'');setClass('bdk',t==1?'on':'');document.documentElement.classList.toggle('dark',t==1);sv(PK,prefs);}
+function cF(d){prefs.fs=Math.max(13,Math.min(21,prefs.fs+d));document.documentElement.style.setProperty('--fs-scale',(prefs.fs/16));setText('fv',prefs.fs);sv(PK,prefs);}
+function applyPrefs(){setTheme(prefs.theme);document.documentElement.style.setProperty('--fs-scale',(prefs.fs/16));setText('fv',prefs.fs);setClass('bfa',prefs.lang=='fa'?'on':'');setClass('ben',prefs.lang=='en'?'on':'');$('app').setAttribute('dir',prefs.lang=='fa'?'rtl':'ltr');applyLangText();}
+function applyLangText(){var F=prefs.lang=='fa';setText('tb-title',F?'نیستان':"Nayestan");setText('bfa',F?'فارسی':'Persian');setText('ben',F?'انگلیسی':'English');setText('nbl-read',F?'مطالعه':'Read');setText('nbl-search',F?'جستجو':'Search');setText('nbl-sbr',F?'شاه بیت':'Master Couplet');setText('nbl-refl',F?'تدبر':'Reflection');setText('nbl-quran',F?'قرآن':'Quran');setText('nbl-hadith',F?'حدیث':'Hadith');setText('sh-streak-t',F?'🔥 استریک و تقویم':'🔥 Streak & Calendar');setText('sh-pts-t',F?'💎 امتیازات':'💎 Points');setText('sh-prof-t',F?'👤 پروفایل کاربری':'👤 Profile');setText('sh-unlock-t',F?'🔑 کد دسترسی':'🔑 Access Code');setText('sh-set-t',F?'⚙️ تنظیمات':'⚙️ Settings');setText('ll',F?'🌐 زبان':'🌐 Language');setText('prof-open-btn',F?'👤 پروفایل کاربری':'👤 Profile');updateStatusBox();}
+function updateStatusBox(){var F=prefs.lang=='fa';var box=$('cur-status');if(!box)return;if(hasContent){box.textContent=(F?'وضعیت فعلی: ':'Current: ')+verses.length+(F?' بیت، ':' verses, ')+lessons.length+(F?' درس (منبع: ':' lessons (source: ')+loadedFrom+')';}else{box.textContent=F?'وضعیت فعلی: هیچ محتوایی بارگذاری نشده':'Current: no content loaded';}}
+
+function openSheet(name){$('sh-ov').style.display='block';['streak','pts','settings','profile','unlock'].forEach(function(s){$('sh-'+s).style.display=s==name?'block':'none';});if(name=='streak'){initStreakView();renderStreakSheet();}if(name=='pts')renderPtsSheet();if(name=='profile'){showCheckout=false;profileView='main';renderProfileSheet();}if(name=='settings'){updateStatusBox();}}
+function closeSheet(){$('sh-ov').style.display='none';['streak','pts','settings','profile','unlock'].forEach(function(s){$('sh-'+s).style.display='none';});}
+
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function checkStreakMilestone(){var s=streakData.streak;if(!streakData.milestonesAwarded)streakData.milestonesAwarded=[];if(STREAK_BONUS[s]&&streakData.milestonesAwarded.indexOf(s)<0){streakData.milestonesAwarded.push(s);sv(SK,streakData);var bonus=STREAK_BONUS[s];addPts(bonus);var F=prefs.lang=='fa';setTimeout(function(){toast(F?'🎉 پاداش استریک '+s+' روزه: +'+bonus+' 💎':'🎉 '+s+'-day streak bonus: +'+bonus+' 💎',3200);},900);}}
+function updateStreak(){var today=todayStr();if(streakData.last===today)return;var yest=new Date(Date.now()-86400000).toISOString().slice(0,10);var isFrzDay=(streakData.frozenDays||[]).indexOf(yest)>=0;if(streakData.last===yest||isFrzDay){streakData.streak++;}else if(streakData.last&&streakData.last!==today){if((streakData.freezes||0)>0){streakData.freezes--;if(!streakData.frozenDays)streakData.frozenDays=[];streakData.frozenDays.push(yest);streakData.streak++;var F=prefs.lang=='fa';setTimeout(function(){toast(F?'🧊 فریز استریک به‌صورت خودکار استفاده شد! ('+streakData.freezes+' فریز مانده)':'🧊 Streak freeze used automatically! ('+streakData.freezes+' remaining)',2800);},400);if(streakData.freezes===0){setTimeout(function(){var F2=prefs.lang=='fa';toast(F2?'⚠️ تمام فریزهای شما تمام شد!':'⚠️ All freezes used!',3200);},3600);}}else{streakData.streak=1;}}else if(!streakData.last){streakData.streak=1;}streakData.last=today;if(streakData.history.indexOf(today)<0)streakData.history.push(today);sv(SK,streakData);setText('streak-num',streakData.streak);checkStreakMilestone();}
+function markAct(){sv(SK,streakData);}
+function buyFreeze(){var F=prefs.lang=='fa';if(!spendPts(PT_FREEZE)){toast(F?'💎 امتیاز کافی نداری':'Not enough 💎');return;}streakData.freezes=(streakData.freezes||0)+1;sv(SK,streakData);toast(F?'🧊 یک فریز خریداری شد!':'🧊 Freeze purchased!');renderStreakSheet();}
+function reqNotif(){var F=prefs.lang=='fa';if(!('Notification' in window)){toast(F?'پشتیبانی نمی‌شود':'Not supported');return;}Notification.requestPermission().then(function(p){if(p=='granted'){toast(F?'✓ اعلان فعال شد':'✓ Enabled');if(profileView==='notif')renderProfileSheet();}else toast(F?'اجازه داده نشد':'Denied');});}
+
+function initStreakView(){var F=prefs.lang=='fa';var now=new Date();if(F){var j=gregorianToJalali(now.getFullYear(),now.getMonth()+1,now.getDate());svYear=j[0];svMonth=j[1];}else{svYear=now.getFullYear();svMonth=now.getMonth()+1;}}
+function shiftStreakMonth(delta){svMonth+=delta;if(svMonth<1){svMonth=12;svYear--;}else if(svMonth>12){svMonth=1;svYear++;}renderStreakSheet();}
+function setStreakTab(t){if(t==='friends'){toast(prefs.lang=='fa'?'این بخش به‌زودی اضافه می‌شود':'Coming soon');return;}streakTab=t;renderStreakSheet();}
+function countPerfectWeeks(){var practiced={};streakData.history.forEach(function(d){practiced[d]=true;});(streakData.frozenDays||[]).forEach(function(d){practiced[d]=true;});var count=0;var d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-d.getDay()-7);while(true){var allDone=true;for(var i=0;i<7;i++){var dt=new Date(d.getTime()+i*86400000);var ds=dt.toISOString().slice(0,10);if(!practiced[ds]){allDone=false;break;}}if(!allDone)break;count++;d.setDate(d.getDate()-7);}return count;}
+function buildMonthGrid(F,yr,mo){var practiced={};streakData.history.forEach(function(d){practiced[d]=true;});var frozenSet={};(streakData.frozenDays||[]).forEach(function(d){frozenSet[d]=true;});var todayISO=todayStr();var monthLen,firstDow,isoForDay;if(F){monthLen=jalaliMonthLength(yr,mo);var g0=jalaliToGregorian(yr,mo,1);var d0=new Date(g0[0],g0[1]-1,g0[2]);firstDow=(d0.getDay()+1)%7;isoForDay=function(day){var g=jalaliToGregorian(yr,mo,day);var dt=new Date(g[0],g[1]-1,g[2]);return dt.toISOString().slice(0,10);};}else{monthLen=new Date(yr,mo,0).getDate();firstDow=new Date(yr,mo-1,1).getDay();isoForDay=function(day){var dt=new Date(yr,mo-1,day);return dt.toISOString().slice(0,10);};}var cells=[];for(var i=0;i<firstDow;i++)cells.push(null);for(var day=1;day<=monthLen;day++){var iso=isoForDay(day);cells.push({day:day,iso:iso,done:!!practiced[iso],frozen:!!frozenSet[iso],today:iso===todayISO});}while(cells.length%7!==0)cells.push(null);var rows=[];for(var i2=0;i2<cells.length;i2+=7)rows.push(cells.slice(i2,i2+7));var practicedCount=0,frozenCount=0;rows.forEach(function(row){row.forEach(function(c){if(c){if(c.done)practicedCount++;if(c.frozen)frozenCount++;}});});var h='';rows.forEach(function(row){var full=row.every(function(c){return c&&c.done;});h+='<div class="cal-week'+(full?' chain':'')+'">';row.forEach(function(c){if(!c){h+='<div class="cd2 empty"></div>';return;}h+='<div class="cd2'+(c.done?' done':'')+(c.today?' today':'')+'">'+(c.frozen?'<span class="freeze-badge">💧</span>':'')+c.day+'</div>';});h+='</div>';});return{html:h,practicedCount:practicedCount,frozenCount:frozenCount};}
+function renderStreakSheet(){var F=prefs.lang=='fa';if(svYear==null)initStreakView();var s=streakData.streak,fz=streakData.freezes||0;var perfectWeeks=countPerfectWeeks();var h='';h+='<div class="streak-tabs"><div class="stab on" onclick="setStreakTab(\'personal\')">'+(F?'شخصی':'Personal')+'</div><div class="stab" onclick="setStreakTab(\'friends\')">'+(F?'دوستان':'Friends')+'</div></div>';h+='<div class="streak-hero"><div class="streak-hero-fire">🔥</div><div class="streak-hero-n">'+s+'</div><div class="streak-hero-l">'+(F?'روز استریک متوالی!':'day streak!')+'</div></div>';h+='<div class="dbg-box" style="text-align:center;margin-bottom:10px">'+(F?'ℹ️ برای تکمیل استریک هر روز، باید آن روز حداقل ۱۰ 💎 امتیاز کسب کنی.':'ℹ️ To complete your streak each day, you must earn at least 10 💎 points that day.')+'</div>';if(perfectWeeks>0){var msg=F?('شما '+perfectWeeks+' هفتهٔ متوالی استریک کامل داشته\u200cاید. عالیه!'):('You have kept a Perfect Streak for '+perfectWeeks+' straight weeks. Wow!');h+='<div class="perfect-msg">🎉 '+msg+'</div>';}var monthName;if(F){var mnames=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];monthName=mnames[svMonth-1]+' '+svYear;}else{var enames=['January','February','March','April','May','June','July','August','September','October','November','December'];monthName=enames[svMonth-1]+' '+svYear;}h+='<div class="month-nav"><button class="mnav-btn" onclick="shiftStreakMonth(-1)">‹</button><span class="mnav-t">'+monthName+'</span><button class="mnav-btn" onclick="shiftStreakMonth(1)">›</button></div>';var grid=buildMonthGrid(F,svYear,svMonth);h+='<div class="month-stats"><div class="mstat"><span class="mstat-ic">✅</span><span class="mstat-n">'+grid.practicedCount+'</span><span class="mstat-l">'+(F?'روز تمرین':'Days practiced')+'</span></div><div class="mstat"><span class="mstat-ic">💧</span><span class="mstat-n">'+grid.frozenCount+'</span><span class="mstat-l">'+(F?'فریز استفاده\u200cشده':'Freezes used')+'</span></div></div>';var dayN=F?['ش','ی','د','س','چ','پ','ج']:['Su','Mo','Tu','We','Th','Fr','Sa'];h+='<div class="cal-hdr">';for(var i=0;i<7;i++)h+='<div class="cal-day-lbl">'+dayN[i]+'</div>';h+='</div>';h+='<div class="month-grid">'+grid.html+'</div>';var base=Math.floor(s/25)*25;var markers=[Math.max(base-25,0),base,base+25,base+50];var pos=markers[3]>markers[0]?Math.min(100,Math.max(0,(s-markers[0])/(markers[3]-markers[0])*100)):0;h+='<div class="goal-title">🎯 '+(F?'هدف استریک':'Streak Goal')+'</div>';h+='<div class="goal-bar-wrap"><div class="goal-bar-track"><div class="goal-bar-fill" style="width:'+pos+'%"></div></div><div class="goal-markers">';markers.forEach(function(m,mi){h+='<div class="goal-marker'+(mi<3?' passed':'')+'">'+(mi<3?'🔥':'🏳️')+'<span>'+m+'</span></div>';});h+='</div></div>';h+='<div class="freeze-row"><div style="font-size:calc(24px * var(--fs-scale))">🧊</div><div style="flex:1;min-width:0"><div class="freeze-t">'+(F?'فریز استریک':'Streak Freeze')+' × '+fz+'</div><div class="freeze-s">'+(F?'در صورت غیبت، خودکار استفاده می\u200cشود.':'Auto-used when you miss a day.')+'</div></div><button class="frz-btn buy" '+(getPts()>=PT_FREEZE?'onclick="buyFreeze()"':'disabled')+'>'+(F?'خرید<br>'+PT_FREEZE+'💎':'Buy<br>'+PT_FREEZE+'💎')+'</button></div>';H('sh-streak-body',h);}
+
+function renderPtsSheet(){var F=prefs.lang=='fa';var h='<div class="pts-hero"><div style="font-size:calc(40px * var(--fs-scale));margin-bottom:8px">💎</div><div class="pts-hero-n">'+getPts()+'</div><div class="pts-hero-l">'+(F?'امتیاز فعلی شما':'Your current points')+'</div></div>';h+='<div class="month-stats"><div class="mstat"><span class="mstat-ic">🏆</span><span class="mstat-n">'+(userData.totalEarned||0)+'</span><span class="mstat-l">'+(F?'مجموع کسب‌شده':'Total earned')+'</span></div><div class="mstat"><span class="mstat-ic">💳</span><span class="mstat-n">'+(userData.totalPurchased||0)+'</span><span class="mstat-l">'+(F?'مجموع خریداری‌شده':'Total purchased')+'</span></div></div>';h+='<div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:4px 12px;margin-bottom:14px;border:0.5px solid var(--color-border-tertiary)">';h+='<div class="earn-row"><span class="earn-ic"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg></span><span class="earn-t">'+(F?'بیت + معنا (هر بیت)':'Couplet + meaning (per couplet)')+'</span><span class="earn-v">+'+PT_VERSE+' 💎</span></div>';h+='<div class="earn-row"><span class="earn-ic">📚</span><span class="earn-t">'+(F?'ارتباط قرآنی/حدیثی (هر بیت)':'Quranic/Hadith links (per couplet)')+'</span><span class="earn-v">+'+PT_QH+' 💎</span></div>';h+='<div class="earn-row"><span class="earn-ic"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg></span><span class="earn-t">'+(F?'تفسیر (هر بیت)':'Commentary (per couplet)')+'</span><span class="earn-v">+'+PT_TAFSIR+' 💎</span></div>';h+='<div class="earn-row"><span class="earn-ic"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#4C3A8C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M12,18.8 C5.2,14 5.2,7.6 9.2,6.8 C10.8,6.4 12,7.6 12,8.8 C12,7.6 13.2,6.4 14.8,6.8 C18.8,7.6 18.8,14 12,18.8 Z"/><path d="M12,1.2 C14,3.2 14,5.2 12,7.2 C10,5.2 10,3.2 12,1.2 Z"/></svg></span><span class="earn-t">'+(F?'تدبر (هر بیت)':'Reflection (per couplet)')+'</span><span class="earn-v">+'+PT_REFL+' 💎</span></div>';h+='<div class="earn-row"><span class="earn-ic">🔗</span><span class="earn-t">'+(F?'خواندن کامل پاپ‌آپ مرجع':'Reading a reference popup fully')+'</span><span class="earn-v">+'+PT_POPUP+' 💎</span></div>';h+='<div class="earn-row"><span class="earn-ic">🎓</span><span class="earn-t">'+(F?'تکمیل هر درس':'Complete a lesson')+'</span><span class="earn-v">+'+PT_LESSON+' 💎</span></div>';h+='<div class="earn-row"><span class="earn-ic">🔥</span><span class="earn-t">'+(F?'استریک ۷ روزه':'7-day streak')+'</span><span class="earn-v">+'+STREAK_BONUS[7]+' 💎</span></div>';h+='<div class="earn-row"><span class="earn-ic">🔥</span><span class="earn-t">'+(F?'استریک ۳۰ روزه':'30-day streak')+'</span><span class="earn-v">+'+STREAK_BONUS[30]+' 💎</span></div>';h+='<div class="earn-row"><span class="earn-ic">🔥</span><span class="earn-t">'+(F?'استریک ۱۰۰ روزه':'100-day streak')+'</span><span class="earn-v">+'+STREAK_BONUS[100]+' 💎</span></div>';h+='<div class="earn-row"><span class="earn-ic">🎁</span><span class="earn-t">'+(F?'جایزهٔ خوش\u200cآمد (اولین ورود)':'Welcome bonus (first visit)')+'</span><span class="earn-v">+'+PT_WELCOME+' 💎</span></div>';h+='</div>';h+='<div class="dbg-box" style="margin-bottom:10px">💡 '+(F?'کاربران بیسیک نیز می‌توانند با امتیاز، ارتباط قرآنی/حدیثی و تدبر را با 20 💎 و تفسیر را با 30 💎 برای هر بیت باز کنند؛ همچنین هر جستجو '+PT_SEARCH+' 💎.':'Basic users can unlock Quranic/Hadith links & reflection for 20 💎, commentary for 30 💎 per couplet, and each search costs '+PT_SEARCH+' 💎.')+'</div>';h+='<div class="refer-row"><div style="font-size:calc(28px * var(--fs-scale))">🤝</div><div style="flex:1;min-width:0"><div class="refer-t">'+(F?'معرفی به دوستان':'Refer a friend')+'</div><div class="refer-s">+'+PT_REFER+' '+(F?'💎 به ازای هر معرفی':'💎 per referral')+'</div></div><button class="refer-btn" onclick="doRefer()">'+(F?'📤 معرفی':'📤 Refer')+'</button></div>';h+='<div class="charity-note">🤲 '+(F?'مبلغ پرداختی برای خرید امتیاز به\u200cعنوان صدقه در نظر گرفته می\u200cشود و در همین راستا هزینه خواهد شد.':'Money paid to buy points is treated as a charitable donation (sadaqah) and will be used for that purpose.')+'</div>';var pkgs=[['🌱','$1','20 💎',20],['🌿','$3','60 💎',60],['🌳','$5','100 💎',100],['🌲','$10','200 💎',200]];h+='<div class="pkg-grid">';pkgs.forEach(function(p){h+='<div class="pkg" onclick="donoPkg('+p[3]+','+p[1].replace('$','')+')"><div class="pkg-ic">'+p[0]+'</div><div class="pkg-pts">'+p[2]+'</div><div class="pkg-price">'+p[1]+'</div></div>';});h+='</div>';H('sh-pts-body',h);}
+function doRefer(){var F=prefs.lang=='fa';var txt=F?('من دارم مثنوی معنوی می\u200cخونم، تو هم بپیوند! (هر دو +'+PT_REFER+' 💎 می\u200cگیریم)'):('I am studying the Masnavi, join me! (we both get +'+PT_REFER+' 💎)');if(navigator.share)navigator.share({text:txt}).then(function(){addPts(PT_REFER);toast(F?'+'+PT_REFER+' 💎 دریافت شد!':'+'+PT_REFER+' 💎 received!');});else{try{navigator.clipboard.writeText(txt);addPts(PT_REFER);toast(F?'کپی شد، +'+PT_REFER+' 💎!':'Copied, +'+PT_REFER+' 💎!');}catch(e){}}}
+function donoPkg(pts,dlr){var F=prefs.lang=='fa';addPts(pts,'purchase');toast(F?'🤲 این مبلغ به\u200cعنوان صدقه محسوب شد. +'+pts+' 💎 (آزمایشی)':'🤲 Counted as charity (sadaqah). +'+pts+' 💎 (trial)',3000);renderPtsSheet();}
+
+function renderProfileSheet(){var F=prefs.lang=='fa';var h='';if(profileView==='main')h=renderProfileMain(F);else if(profileView==='notif')h=renderProfileNotifView(F);else if(profileView==='sub')h=renderProfileSubView(F);else if(profileView==='prefs')h=renderProfilePrefsView(F);else if(profileView==='feedback')h=renderProfileFeedbackView(F);H('sh-profile-body',h);var sub=prefs.subscription||'basic';if(profileView==='sub'&&sub=='premium'&&prefs.familyRole==='owner'&&prefs.familyCode&&!showCheckout)renderFamilyMembersUI();}
+function setProfileView(v){profileView=v;showCheckout=false;renderProfileSheet();}
+function renderProfileMain(F){var name=prefs.profileName||'';var h='<div style="text-align:center;padding:2px 0 18px">';h+='<div class="prof-avatar">'+(name.trim()?E(name.trim()[0]):'👤')+'</div>';h+='<input type="text" class="prof-name-inp" id="prof-name" value="'+A(name)+'" placeholder="'+(F?'نام شما':'Your name')+'" style="direction:'+(F?'rtl':'ltr')+'" oninput="onProfName(this.value)">';h+='</div>';h+='<div class="menu-row" onclick="setProfileView(\'notif\')"><span class="menu-row-l">🔔 '+(F?'اعلان\u200cها':'Notifications')+'</span><span class="menu-row-arrow">'+(F?'‹':'›')+'</span></div>';h+='<div class="menu-row" onclick="setProfileView(\'sub\')"><span class="menu-row-l">💳 '+(F?'اشتراک':'Subscription')+'</span><span class="menu-row-arrow">'+(F?'‹':'›')+'</span></div>';h+='<div class="menu-row" onclick="setProfileView(\'prefs\')"><span class="menu-row-l">🎨 '+(F?'ترجیحات':'Preferences')+'</span><span class="menu-row-arrow">'+(F?'‹':'›')+'</span></div>';h+='<div class="menu-row" onclick="setProfileView(\'feedback\')"><span class="menu-row-l">💬 '+(F?'بازخورد':'Feedback')+'</span><span class="menu-row-arrow">'+(F?'‹':'›')+'</span></div>';return h;}
+function renderProfilePrefsView(F){var h='<div class="profile-back" onclick="setProfileView(\'main\')">'+(F?'→ بازگشت':'← Back')+'</div>';h+='<div class="sp-row"><span class="sp-lbl">🎨 '+(F?'تم':'Theme')+'</span><div class="seg"><button class="'+(prefs.theme==0?'on':'')+'" id="blt" onclick="setTheme(0)">☀️ '+(F?'روشن':'Light')+'</button><button class="'+(prefs.theme==1?'on':'')+'" id="bdk" onclick="setTheme(1)">🌙 '+(F?'تاریک':'Dark')+'</button></div></div>';h+='<div class="sp-row"><span class="sp-lbl">🔡 '+(F?'اندازه متن':'Font Size')+'</span><div class="szc"><button class="szb" onclick="cF(-1)">−</button><span class="szv" id="fv">'+prefs.fs+'</span><button class="szb" onclick="cF(1)">+</button></div></div>';h+='<div class="sp-row col"><span class="sp-lbl">◆ '+(F?'نمایش اعراب همهٔ ابیات':'Diacritics for all couplets')+'</span><div style="font-size:calc(11px * var(--fs-scale));color:var(--color-text-tertiary);line-height:1.7">'+(F?'این فقط ابیاتِ نمایش داده\u200cشدهٔ فعلی را تغییر می\u200cدهد؛ بعد از آن هنوز می\u200cتوانی زیر هر بیت جداگانه با اعراب یا بدون اعراب را انتخاب کنی.':'This only changes currently visible couplets; you can still switch each one individually afterward.')+'</div><div style="display:flex;gap:8px;margin-top:4px"><button class="lib-btn" style="flex:1" onclick="setAllErab(true)">◇ '+(F?'همه با اعراب':'All with diacritics')+'</button><button class="lib-btn" style="flex:1" onclick="setAllErab(false)">◆ '+(F?'همه بدون اعراب':'All plain')+'</button></div></div>';return h;}
+function setAllErab(showErab){
+  var F=prefs.lang=='fa';var count=0;
+  prefs.erabAll=showErab;
+  sv(PK,prefs);
+  document.querySelectorAll('.vtxt').forEach(function(el){
+    var n=el.id.replace('vt_','');
+    var v=verses.find(function(x){return String(x.num||x.n)==n;});
+    if(!v)return;
+    var hasErab=!!(v.textErab||v.e);
+    if(!hasErab)return;
+    var btn=$('et_'+n);
+    var src=showErab?(v.textErab||v.e):(v.text||v.t);
+    el.innerHTML=(src||'').split('\n').filter(Boolean).map(function(l){return wordsClickableHtml(l.trim(),n);}).join('<br>');
+    if(btn){btn.classList.toggle('on',showErab);btn.textContent=showErab?(F?'◆ بدون اعراب':'◆ Plain'):(F?'◇ با اعراب':'◇ Diacritics');}
+    count++;
+  });
+  toast(F?'✓ این حالت برای همهٔ ابیات (حتی درس‌های هنوز بازنشده) ذخیره شد':'✓ Saved for all couplets, including lessons not opened yet');
+}
+function renderProfileNotifView(F){var h='<div class="profile-back" onclick="setProfileView(\'main\')">'+(F?'→ بازگشت':'← Back')+'</div>';var ns='Notification' in window?Notification.permission:'unsupported';h+='<div class="notif-row"><div class="notif-t">🔔 '+(F?'مطالعهٔ روزانه و یادآوری استریک':'Daily study & streak reminder')+'</div><div class="notif-s">'+(F?'اگر یک روز فعالیتی نداشته باشی، یادآوری دریافت می\u200cکنی.':'You will get a reminder if you miss a day.')+'</div>';if(ns==='granted')h+='<div style="font-size:calc(12px * var(--fs-scale));font-weight:700;color:var(--grn)">✓ '+(F?'فعال است':'Enabled')+'</div>';else h+='<button class="notif-btn" onclick="reqNotif()">'+(F?'🔔 فعال\u200cسازی':'🔔 Enable')+'</button>';h+='<div style="font-size:calc(11px * var(--fs-scale));font-weight:700;color:var(--color-text-primary);margin-top:12px">⏰ '+(F?'ساعت یادآوری روزانه':'Daily reminder time')+'</div>';h+='<input type="time" class="time-inp" id="reminder-time" value="'+(prefs.reminderTime||'09:00')+'" onchange="setReminderTime(this.value)">';if(ns==='granted')h+='<button class="lib-btn" style="width:100%;margin-top:10px" onclick="testNotif()">'+(F?'🔔 ارسال نوتیف آزمایشی الان':'🔔 Send test notification now')+'</button>';h+='<div style="font-size:calc(10px * var(--fs-scale));color:var(--color-text-tertiary);line-height:1.8;margin-top:10px">'+(F?'⚠️ چون این برنامه سرور ندارد، این یادآوری فقط زمانی می\u200cرسد که برنامه باز یا اخیراً در پس\u200cزمینه بوده باشد؛ اگر کاملاً از برنامه خارج شوید ممکن است نرسد.':'⚠️ Since this app has no backend server, this reminder only fires while the app is open or was recently backgrounded — it may not arrive if you fully close the app.')+'</div></div>';return h;}
+function testNotif(){
+  var F=prefs.lang=='fa';
+  if(!('Notification' in window)){toast(F?'⚠️ این دستگاه از نوتیف در اپ نصب\u200cشده پشتیبانی نمی\u200cکند (iOS 16.4+ لازم است)':'⚠️ This device does not support notifications in installed apps (needs iOS 16.4+)',4500);return;}
+  if(Notification.permission!=='granted'){toast(F?'ابتدا اعلان را فعال کن':'Enable notifications first');return;}
+  var title=F?'یادآوری مطالعهٔ مثنوی':'Masnavi Study Reminder';
+  var body=F?'این یک نوتیف آزمایشی است ✓':'This is a test notification ✓';
+  function fallbackDirect(){
+    try{new Notification(title,{body:body});toast(F?'✓ ارسال شد':'✓ Sent');}
+    catch(e){toast(F?'⚠️ ارسال نشد: '+e.message:'⚠️ Failed: '+e.message,4500);}
+  }
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.getRegistration().then(function(reg){
+      if(!reg){fallbackDirect();return;}
+      reg.showNotification(title,{body:body,icon:'icons/icon-192.png',badge:'icons/icon-192.png'}).then(function(){
+        toast(F?'✓ نوتیف ارسال شد — اگر ندیدی\u200cاش، بخش اعلان\u200cهای گوشی را بررسی کن':'✓ Notification sent — check your device\u200cs notification center if you did not see it',4000);
+      }).catch(function(err){toast(F?'⚠️ ارسال نشد: '+err.message:'⚠️ Failed: '+err.message,4500);});
+    }).catch(fallbackDirect);
+  }else{fallbackDirect();}
+}
+function setReminderTime(v){prefs.reminderTime=v;sv(PK,prefs);var F=prefs.lang=='fa';toast(F?'✓ ساعت یادآوری ذخیره شد':'✓ Reminder time saved');}
+function renderProfileSubView(F){var h='<div class="profile-back" onclick="setProfileView(\'main\')">'+(F?'→ بازگشت':'← Back')+'</div>';var sub=prefs.subscription||'basic';if(showCheckout){h+=renderCheckoutHtml(F);return h;}h+='<div class="sub-tier-card'+(sub=='basic'?' on':'')+'" onclick="'+(sub=='basic'?'':'setSubscription(\'basic\')')+'">';h+='<div class="sub-tier-top"><span class="sub-tier-name">'+(F?'بیسیک':'Basic')+'</span>'+(sub=='basic'?'<span class="sub-tier-badge">'+(F?'فعال':'Current')+'</span>':'')+'</div>';h+='<div class="sub-tier-desc">'+(F?'بیت و معنا، یادداشت هر بیت، یادداشت روزانه، لایک، استریک و امتیاز؛ خرید تک‌به‌تک ارتباط قرآنی/حدیثی، تفسیر و تدبر با امتیاز':'Couplets & meanings, notes, likes, streak & points; unlock Quranic/Hadith links, commentary & reflection per-couplet with points')+'</div></div>';h+='<div class="sub-tier-card'+(sub=='premium'?' on':'')+'" onclick="'+(sub=='premium'?'':'openCheckout()')+'">';h+='<div class="sub-tier-top"><span class="sub-tier-name">'+(F?'پریمیوم':'Premium')+'</span>'+(sub=='premium'?'<span class="sub-tier-badge">'+(F?'فعال':'Current')+'</span>':'<span class="sub-tier-price">$'+PREMIUM_PRICE+'</span>')+'</div>';h+='<div class="sub-tier-desc">'+(F?'همه چیز در بیسیک، به\u200cعلاوهٔ دسترسی کامل و رایگان به ارتباط قرآنی/حدیثی، تفسیر، تدبر و جستجو':'Everything in Basic, plus free full access to Quranic & Hadith links, commentary, reflection & search')+'</div></div>';if(sub=='premium'&&prefs.familyCode){if(prefs.familyRole==='owner'){h+='<div style="margin-top:12px"><div class="dbg-box" style="direction:'+(F?'rtl':'ltr')+'">'+(F?'کد دعوت خانواده: ':'Family invite code: ')+'<b>'+E(prefs.familyCode)+'</b></div><div id="fam-members-box" style="margin-top:10px">'+(F?'در حال بارگذاری اعضا...':'Loading members...')+'</div></div>';}else{h+='<div style="margin-top:8px" class="dbg-box" style="direction:'+(F?'rtl':'ltr')+'">'+(F?'شما با کد دعوت خانواده به پریمیوم پیوسته\u200cاید: ':'Joined Premium via family code: ')+'<b>'+E(prefs.familyCode)+'</b></div>';}}if(sub!='premium'){h+='<div style="margin-top:8px"><button class="lib-btn" style="width:100%" onclick="toggleRedeemBox()">🎟 '+(F?'کد دعوت خانواده دارم':'I have a family invite code')+'</button><div id="redeem-box" style="display:none;margin-top:8px"><input type="text" id="fam-code-inp" class="fam-code-inp" placeholder="'+(F?'کد ۶ کاراکتری':'6-char code')+'" oninput="this.value=this.value.toUpperCase()"><button class="btn-p" onclick="redeemFamCode()">'+(F?'فعال\u200cسازی رایگان':'Activate for free')+'</button></div></div>';}return h;}
+async function loadFamilyData(){var fam=await ld('family:'+prefs.familyCode,true);if(!fam)fam={seats:FAM_SEATS,used:0,members:[]};if(!fam.members)fam.members=[];return fam;}
+async function renderFamilyMembersUI(){var F=prefs.lang=='fa';var fam=await loadFamilyData();var h='<div style="font-size:calc(12px * var(--fs-scale));font-weight:700;color:var(--color-text-primary);margin-bottom:8px">👪 '+(F?'اعضای دعوت\u200cشده':'Invited members')+' ('+fam.members.length+'/'+fam.seats+')</div>';if(!fam.members.length){h+='<div style="font-size:calc(11px * var(--fs-scale));color:var(--color-text-tertiary);margin-bottom:8px">'+(F?'هنوز عضوی اضافه نشده است.':'No members added yet.')+'</div>';}fam.members.forEach(function(m,mi){h+='<div class="menu-row" style="cursor:default"><span class="menu-row-l">👤 '+E(m.name)+'</span><button class="lib-btn r" onclick="removeFamilyMember('+mi+')">✕ '+(F?'حذف':'Remove')+'</button></div>';});if(fam.members.length<fam.seats){h+='<button class="lib-btn" style="width:100%;margin-top:4px" onclick="copyFamCode()">➕ '+(F?'افزودن عضو جدید (اشتراک‌گذاری کد)':'Add new member (share code)')+'</button>';}else{h+='<div style="font-size:calc(11px * var(--fs-scale));color:var(--color-text-tertiary);margin-top:4px">'+(F?'ظرفیت پُر است.':'Capacity full.')+'</div>';}H('fam-members-box',h);}
+async function removeFamilyMember(idx){var F=prefs.lang=='fa';var fam=await loadFamilyData();fam.members.splice(idx,1);fam.used=fam.members.length;await sv('family:'+prefs.familyCode,fam,true);toast(F?'✓ عضو حذف شد':'✓ Member removed');renderFamilyMembersUI();}
+function renderProfileFeedbackView(F){var h='<div class="profile-back" onclick="setProfileView(\'main\')">'+(F?'→ بازگشت':'← Back')+'</div>';h+='<div class="fb-crumb">'+(F?'مرکز راهنما > بازخورد':'HELP CENTER > FEEDBACK')+'</div>';h+='<div class="fb-title">'+(F?'چطور می\u200cتونیم کمکت کنیم؟':'What can we help you with?')+'</div>';h+='<div style="font-size:calc(13px * var(--fs-scale));font-weight:700;color:var(--color-text-primary);margin-bottom:4px">'+(F?'مشکلت را توضیح بده':'Describe your issue')+'</div>';h+='<div style="font-size:calc(11px * var(--fs-scale));color:var(--color-text-tertiary);line-height:1.7;margin-bottom:16px">'+(F?'لطفاً مشکلی که داری رو تا حد امکان با جزئیات توضیح بده.':'Please describe the issue in as much detail as possible.')+'</div>';h+='<div class="note-lbl">'+(F?'ایمیل شما *':'Your Email Address *')+'</div>';h+='<input type="email" class="prof-name-inp" id="fb-email" value="'+A(prefs.feedbackEmail||'')+'" placeholder="you@example.com" style="text-align:center;direction:ltr;margin-bottom:12px" oninput="prefs.feedbackEmail=this.value">';h+='<div class="note-lbl">'+(F?'موضوع *':'Subject *')+'</div>';h+='<input type="text" class="prof-name-inp" id="fb-subject" style="text-align:'+(F?'right':'left')+';margin-bottom:12px" placeholder="'+(F?'موضوع را وارد کن':'Enter a subject')+'">';h+='<div class="note-lbl">'+(F?'توضیحات *':'Description *')+'</div>';h+='<textarea class="imp-ta" id="fb-ta" style="font-family:var(--f);height:90px;direction:'+(F?'rtl':'ltr')+';text-align:'+(F?'right':'left')+'" placeholder="'+(F?'نظر یا مشکلت را بنویس...':'Describe your issue...')+'"></textarea>';h+='<div class="note-lbl" style="margin-top:2px">'+(F?'نوع درخواست *':'Type of issue *')+'</div>';var types=F?['گزارش تخلف','دسترسی به حساب ندارم','گزارش باگ','مشکل خرید یا اشتراک','بازخورد یا درخواست ویژگی','درخواست حذف حساب']:['Report abuse','I cannot access my account','Bug report','Purchase or subscription issue','Feedback or feature request','Account deletion request'];h+='<select id="fb-type" class="fb-select">';types.forEach(function(t,ti){h+='<option value="'+ti+'"'+(ti===2?' selected':'')+'>'+E(t)+'</option>';});h+='</select>';h+='<button class="btn-p" onclick="submitFeedback()">'+(F?'ارسال':'SUBMIT')+'</button><div class="imp-ok" id="fb-ok"></div>';return h;}
+function toggleRedeemBox(){var b=$('redeem-box');if(b)b.style.display=b.style.display=='none'?'block':'none';}
+function copyFamCode(){var F=prefs.lang=='fa';try{navigator.clipboard.writeText(prefs.familyCode);toast(F?'✓ کد کپی شد':'✓ Code copied');}catch(e){}}
+function openCheckout(){showCheckout=true;renderProfileSheet();}
+function closeCheckout(){showCheckout=false;renderProfileSheet();}
+function renderCheckoutHtml(F){var h='<div style="padding:14px;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary)">';h+='<div style="font-size:calc(13px * var(--fs-scale));font-weight:700;color:var(--color-text-primary);margin-bottom:6px">💳 '+(F?'خرید اشتراک پریمیوم':'Buy Premium')+'</div>';h+='<div style="font-size:calc(28px * var(--fs-scale));font-weight:700;color:var(--pur);margin-bottom:6px">$'+PREMIUM_PRICE+'</div>';h+='<div style="font-size:calc(11px * var(--fs-scale));color:var(--color-text-tertiary);line-height:1.8;margin-bottom:10px">'+(F?'با این خرید، تا ۳ نفر دیگر هم می\u200cتوانند با یک کد دعوت، رایگان از نسخهٔ پریمیوم زیر همین حساب استفاده کنند. همچنین تا هرجایی که تا الان مطالعه کرده\u200cای، همهٔ آیات، احادیث، تفسیرها و تدبرهایی که قبلاً بهشون دسترسی نداشتی خودکار در آرشیو ظاهر می\u200cشوند.':'This unlocks Premium for you, plus an invite code so up to 3 more people can join for free. Everything you\'ve studied so far will also be retroactively added to your archives.')+'</div>';h+='<div style="font-size:calc(10px * var(--fs-scale));color:var(--color-text-tertiary);background:var(--gold-l);border:0.5px solid rgba(139,96,0,.25);border-radius:var(--border-radius-md);padding:8px 10px;margin-bottom:12px;line-height:1.7">⚠️ '+(F?'این یک پرداخت آزمایشی است.':'This is a trial checkout.')+'</div>';h+='<button class="btn-p" onclick="purchasePremium()">💳 '+(F?'پرداخت آزمایشی $'+PREMIUM_PRICE:'Trial Checkout $'+PREMIUM_PRICE)+'</button>';h+='<button class="lib-btn" style="width:100%;margin-top:8px" onclick="closeCheckout()">'+(F?'انصراف':'Cancel')+'</button>';h+='</div>';return h;}
+function retroactivelyCollectAfterUpgrade(){
+  lessons.forEach(function(l,li){
+    var pages=buildLessonPages(li);
+    var limit;
+    if(isDone(li)){limit=pages.length;}
+    else if(lessonPageState[li]){limit=lessonPageState[li].idx;}
+    else{limit=0;}
+    for(var i=0;i<limit;i++){collectPageSources(li,pages[i]);}
+  });
+  sv(RK,refData);
+}
+async function purchasePremium(){var F=prefs.lang=='fa';toast(F?'⏳ در حال پردازش پرداخت آزمایشی...':'⏳ Processing trial payment...',1800);await new Promise(function(r){setTimeout(r,900);});var code=prefs.familyCode||genCode();var fam=await loadFamilyDataFor(code);await sv('family:'+code,fam,true);prefs.subscription='premium';prefs.familyRole='owner';prefs.familyCode=code;if(!prefs.unlockCode)prefs.unlockCode=gen4Digit();await sv(PK,prefs);retroactivelyCollectAfterUpgrade();showCheckout=false;renderProfileSheet();renderCur();toast(F?'✓ پریمیوم فعال شد! آرشیوها به‌روزرسانی شدند 🎉':'✓ Premium activated! Archives updated 🎉',2800);}
+async function loadFamilyDataFor(code){var fam=await ld('family:'+code,true);if(!fam)fam={seats:FAM_SEATS,used:0,members:[]};if(!fam.members)fam.members=[];return fam;}
+async function redeemFamCode(){var F=prefs.lang=='fa';var inp=$('fam-code-inp');var code=(inp?inp.value:'').trim().toUpperCase();if(!code){toast(F?'کد را وارد کن':'Enter a code');return;}var fam=await loadFamilyDataFor(code);if(fam.used>=fam.seats){toast(F?'ظرفیت این کد تکمیل شده':'This code is full');return;}var mName=(prefs.profileName&&prefs.profileName.trim())||('Member '+(fam.members.length+1));fam.members.push({name:mName,joinedAt:new Date().toISOString()});fam.used=fam.members.length;await sv('family:'+code,fam,true);prefs.subscription='premium';prefs.familyRole='member';prefs.familyCode=code;if(!prefs.unlockCode)prefs.unlockCode=gen4Digit();await sv(PK,prefs);retroactivelyCollectAfterUpgrade();renderProfileSheet();renderCur();toast(F?'✓ اشتراک پریمیوم فعال شد! آرشیوها به‌روزرسانی شدند 🎉':'✓ Premium activated! Archives updated 🎉',2800);}
+function onProfName(v){prefs.profileName=v;clearTimeout(noteTimers['__profname']);noteTimers['__profname']=setTimeout(function(){sv(PK,prefs);var av=document.querySelector('.prof-avatar');if(av)av.textContent=v.trim()?v.trim()[0]:'👤';},500);}
+function setSubscription(tier){var F=prefs.lang=='fa';prefs.subscription=tier;sv(PK,prefs);renderProfileSheet();toast(F?'✓ اشتراک بیسیک فعال شد':'✓ Switched to Basic');renderCur();}
+function saveUnlockCode(){var F=prefs.lang=='fa';var inp=$('unlock-code-edit');var code=(inp?inp.value:'').trim();if(!/^\d{4}$/.test(code)){toast(F?'کد باید دقیقاً ۴ رقم باشد':'Code must be exactly 4 digits');return;}prefs.unlockCode=code;sv(PK,prefs);toast(F?'✓ کد به\u200cروزرسانی شد':'✓ Code updated');}
+function submitFeedback(){var F=prefs.lang=='fa';var subj=($('fb-subject')||{}).value||'';var ta=$('fb-ta');var desc=(ta?ta.value:'').trim();var email=($('fb-email')||{}).value||'';var typeSel=$('fb-type');var typeIdx=typeSel?parseInt(typeSel.value):2;if(!subj.trim()||!desc){toast(F?'موضوع و توضیحات الزامی است':'Subject and description are required');return;}feedbackLog.push({email:email,subject:subj,text:desc,typeIdx:typeIdx,date:new Date().toISOString()});sv(FK,feedbackLog);if(ta)ta.value='';if($('fb-subject'))$('fb-subject').value='';var ok=$('fb-ok');if(ok){ok.textContent=F?'✓ ارسال شد، سپاسگزاریم!':'✓ Sent, thank you!';setTimeout(function(){var j=$('fb-ok');if(j)j.textContent='';},2500);}toast(F?'✓ بازخورد ثبت شد':'✓ Feedback recorded');}
+
+function openUnlockSheet(type,idx,label){
+  var F=prefs.lang=='fa';
+  if(!isPremium()){toast(F?'این قابلیت ویژهٔ کاربران پریمیوم است':'This feature is for Premium users');return;}
+  if(type=='lesson'){
+    if(!prefs.unlockedLessons)prefs.unlockedLessons=[];
+    if(prefs.unlockedLessons.indexOf(idx)<0)prefs.unlockedLessons.push(idx);
+  }else{
+    if(!prefs.unlockedBooks)prefs.unlockedBooks=[];
+    if(prefs.unlockedBooks.indexOf(idx)<0)prefs.unlockedBooks.push(idx);
+  }
+  sv(PK,prefs);
+  toast(F?'✓ باز شد':'✓ Unlocked');
+  if(type=='lesson'){
+    focusedLesson=idx;gT('read');render();focusedLesson=null;
+    setTimeout(function(){var cards=document.querySelectorAll('.lcard');var el=cards[idx];if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},150);
+  }else{
+    gT('read');render();
+    setTimeout(function(){var st=document.querySelector('.bookstrip');if(st)st.scrollIntoView({behavior:'smooth',block:'start'});},150);
+  }
+}
+function renderUnlockSheet(){var F=prefs.lang=='fa';var h='<div style="text-align:center;padding:6px 0 4px"><div style="font-size:calc(40px * var(--fs-scale));margin-bottom:8px">🔑</div><div style="font-size:calc(13px * var(--fs-scale));color:var(--color-text-secondary);margin-bottom:14px;line-height:1.8">'+(F?'برای دسترسی به «'+E(unlockCtx.label)+'» کد ۴ رقمی را وارد کن:':'Enter the 4-digit code to access "'+E(unlockCtx.label)+'":')+'</div>';h+='<input type="text" maxlength="4" inputmode="numeric" class="fam-code-inp" id="unlock-code-inp" placeholder="0000" style="max-width:160px;margin:0 auto 12px;display:block">';h+='<button class="btn-p" onclick="submitUnlock()">'+(F?'باز کردن':'Unlock')+'</button></div>';H('sh-unlock-body',h);}
+function submitUnlock(){var F=prefs.lang=='fa';var inp=$('unlock-code-inp');var code=(inp?inp.value:'').trim();if(!unlockCtx)return;if(code===prefs.unlockCode){var ctx=unlockCtx;if(ctx.type=='lesson'){if(!prefs.unlockedLessons)prefs.unlockedLessons=[];if(prefs.unlockedLessons.indexOf(ctx.idx)<0)prefs.unlockedLessons.push(ctx.idx);}else{if(!prefs.unlockedBooks)prefs.unlockedBooks=[];if(prefs.unlockedBooks.indexOf(ctx.idx)<0)prefs.unlockedBooks.push(ctx.idx);}sv(PK,prefs);closeSheet();toast(F?'✓ باز شد':'✓ Unlocked');if(ctx.type=='lesson'){focusedLesson=ctx.idx;gT('read');render();focusedLesson=null;setTimeout(function(){var cards=document.querySelectorAll('.lcard');var el=cards[ctx.idx];if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},150);}else{gT('read');render();setTimeout(function(){var st=document.querySelector('.bookstrip');if(st)st.scrollIntoView({behavior:'smooth',block:'start'});},150);}unlockCtx=null;}else{toast(F?'کد نادرست است':'Incorrect code');}}
+function bookPlaceholderToast(){var F=prefs.lang=='fa';toast(F?'این دفتر به\u200cزودی محتوا خواهد داشت':'This book will have content soon');}
+
+function doImport(){var raw=$('imp-ta').value.trim(),err=$('imp-err'),ok=$('imp-ok');err.textContent='';ok.textContent='';if(!raw){err.textContent=prefs.lang=='fa'?'لطفاً JSON را paste کن':'Please paste JSON';return;}try{var d=JSON.parse(raw);if(!d.verses||!Array.isArray(d.verses)||d.verses.length<2){err.textContent=prefs.lang=='fa'?'فرمت نادرست — کلید verses یافت نشد':'Invalid format';return;}verses=d.verses;lessons=d.lessons||[];hasContent=true;loadedFrom='manual import';sv(CK,{verses:verses,lessons:lessons});buildNumIndex();var vc=verses.filter(function(v){return v.num||v.n;}).length;ok.textContent=(prefs.lang=='fa'?'✓ بارگذاری شد: ':'✓ Loaded: ')+vc+(prefs.lang=='fa'?' بیت، ':' verses, ')+lessons.length+(prefs.lang=='fa'?' درس':' lessons');$('imp-ta').value='';updateStatusBox();markAct();toast(prefs.lang=='fa'?'✓ محتوای جدید بارگذاری شد':'✓ Content loaded');lessonPageState={};render();}catch(e){err.textContent=(prefs.lang=='fa'?'خطا در JSON: ':'JSON error: ')+e.message;}}
+async function resetContent(){var F=prefs.lang=='fa';await rm(CK);verses=[];lessons=[];hasContent=false;loadedFrom='';streakData={streak:0,last:'',history:[],done:[],freezes:0,frozenDays:[],milestonesAwarded:[],dailyPts:{}};lessonPageState={};await sv(SK,streakData);updateStatusBox();toast(F?'🗑 همه چیز پاک شد':'🗑 Cleared');render();}
+
+function gv(n){return userData[n]||(userData[n]={liked:false,note:''});}
+function tLike(n){var d=gv(n);d.liked=!d.liked;markAct();sv(UK,userData);var b=$('lk_'+n);if(b){b.className='va'+(d.liked?' lk':'');b.textContent=d.liked?'❤️':'🤍';}if(d.liked)toast(prefs.lang=='fa'?'❤️ لایک و ذخیره شد':'❤️ Liked & saved');if(curTab=='liked')renderLiked();}
+function onNote(n,val){gv(n).note=val;clearTimeout(noteTimers[n]);noteTimers[n]=setTimeout(function(){markAct();sv(UK,userData);var i=$('ni_'+n);if(i){i.textContent='✓';setTimeout(function(){var j=$('ni_'+n);if(j)j.textContent='';},1500);}if(curTab=='notes'&&curNoteTab=='verse')renderVerseNotes();},700);}
+function shareSignature(F){var sig='\n\n— '+(F?'مثنوی معنوی، مولانا':"Masnavi Ma'navi, Rumi");sig+='\n\n'+(F?'📱 دانلود اپ نیستان:':'📱 Download Nayestan app:');if(APP_STORE_URL)sig+='\n'+(F?'اپ استور: ':'App Store: ')+APP_STORE_URL;if(PLAY_STORE_URL)sig+='\n'+(F?'گوگل\u200cپلی: ':'Google Play: ')+PLAY_STORE_URL;return sig;}
+function shareVerse(n){var v=verses.find(function(x){return String(x.num||x.n)==n;});if(!v)return;var F=prefs.lang=='fa';var t=(F?'بیت ':'Couplet ')+n+'\n\n'+(v.text||v.t||'');if(F&&(v.maana||v.fa))t+='\n\n'+(v.maana||v.fa);if(!F&&(v.maanaEn||v.en))t+='\n\n'+(v.maanaEn||v.en);t+=shareSignature(F);if(navigator.share)navigator.share({text:t}).catch(function(){});else{try{navigator.clipboard.writeText(t);toast(F?'کپی شد ✓':'Copied ✓');}catch(e){}}}
+function shareReflByKey(n,qi){var r=refData.log.find(function(x){return String(x.n)===String(n)&&x.qi===qi;});if(!r)return;var F=prefs.lang=='fa';var txt=F?(r.fa||''):(r.en||'');var t=(F?'تدبر — بیت ':'Reflection — Couplet ')+r.n+'\n\n'+txt+shareSignature(F);if(navigator.share)navigator.share({text:t}).catch(function(){});else{try{navigator.clipboard.writeText(t);toast(F?'کپی شد ✓':'Copied ✓');}catch(e){}}}
+
+function showRefPop(el,key){
+  var existing=document.querySelector('.ref-pop');
+  var existingKey=existing?existing.dataset.k:null;
+  if(existing){if(popupTimer){clearInterval(popupTimer);popupTimer=null;}existing.remove();}
+  if(existingKey===key){popupKey=null;return;}
+  var ref=refMap[key];if(!ref)return;
+  var F=prefs.lang=='fa',isH=ref.type=='hadith';
+  var canonKey=sourceKey(isH?'hadith':'quran',ref);
+  var su=ref.surah||'',ay=ref.ayah||'',bk=ref.book||'',nm=ref.num||'';
+  var lnk=isH?(bk&&nm?'https://sunnah.com/'+bk+':'+nm:''):(su&&ay?'https://quran.com/'+su+'/'+ay:'');
+  var note=F?(ref.noteFa||ref.note):(ref.noteEn);
+  var refLabel=isH?(bk+(nm?' : '+nm:'')):(F?'سوره '+su+'، آیه '+ay:'Surah '+su+', Ayah '+ay);
+  var div=document.createElement('div');
+  div.className='ref-pop';
+  div.dataset.k=key;
+  var h='<div class="ref-pop-top"><div class="rp-top-l"><span class="src-badge '+(isH?'h':'q')+'">'+(isH?(F?'حدیث':'Hadith'):(F?'قرآن':'Quran'))+'</span><span class="rp-ref" id="rp-ref2">'+E(refLabel)+'</span></div><div class="rp-top-r"><span class="rp-timer" id="rp-timer2"></span><span class="rp-close" onclick="closeRefPop()">✕</span></div></div>';
+  if(lnk)h+='<div class="rp-link-row"><a class="ext-link '+(isH?'h':'q')+'" id="rp-lnk2" href="'+lnk+'" target="_blank">🔗 '+(isH?'Sunnah.com':'Quran.com')+'</a></div>';
+  if(ref.textAr)h+='<div class="rp-ar" id="rp-ar2">'+E(ref.textAr)+'</div>';
+  if(note)h+='<div class="rp-note" id="rp-note2" style="direction:'+(F?'rtl':'ltr')+';text-align:'+(F?'right':'left')+'">'+E(note)+'</div>';
+  div.innerHTML=h;
+  el.insertAdjacentElement('afterend',div);
+  setTimeout(function(){div.scrollIntoView({behavior:'smooth',block:'nearest'});},50);
+  if(popupTimer){clearInterval(popupTimer);popupTimer=null;}
+  popupKey=key;
+  if(!refData.popupAwarded)refData.popupAwarded={};
+  var wc=isH?countWordsText(note):(countWordsText(ref.textAr)+countWordsText(note));
+  var secs=secondsForWords(wc,WPM_NORMAL);
+  var remaining=secs;
+  var te=div.querySelector('#rp-timer2');
+  if(refData.popupAwarded[canonKey]){if(te)te.textContent='';}
+  else{
+    if(te)te.textContent='⏳ '+remaining;
+    popupTimer=setInterval(function(){
+      remaining--;
+      var stillOpen=document.querySelector('.ref-pop[data-k="'+key+'"]');
+      var te2=stillOpen?stillOpen.querySelector('#rp-timer2'):null;
+      if(remaining<=0){
+        clearInterval(popupTimer);popupTimer=null;
+        if(popupKey===key&&stillOpen&&!refData.popupAwarded[canonKey]){
+          refData.popupAwarded[canonKey]=true;sv(RK,refData);addPts(PT_POPUP);toast('+'+PT_POPUP+' 💎');if(te2)te2.textContent='✓';
+        }
+      }else if(te2){te2.textContent='⏳ '+remaining;}
+    },1000);
+  }
+}
+function closeRefPop(){if(popupTimer){clearInterval(popupTimer);popupTimer=null;}var existing=document.querySelector('.ref-pop');if(existing)existing.remove();popupKey=null;}
+document.addEventListener('click',function(e){if(!e.target.classList.contains('tref')&&!e.target.closest('.ref-pop'))closeRefPop();var act=e.target.getAttribute&&e.target.getAttribute('data-act');if(act==='theme'){setThm(e.target.getAttribute('data-thm'));}else if(act==='clearsrch'){clearSrch();}});
+document.addEventListener('copy',function(e){var tag=(e.target.tagName||'').toLowerCase();if(tag==='input'||tag==='textarea')return;var sel=window.getSelection();var anchor=sel&&sel.anchorNode;var el=anchor&&(anchor.nodeType===3?anchor.parentElement:anchor);var allowed=!!(el&&el.closest&&el.closest('.allow-copy'));if(!allowed){e.preventDefault();}});
+
+function renderTf(text,refs,lang,pfx){if(!text)return'';var safe=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');return safe.replace(/\[(\d+)\]/g,function(m,n){var ni=parseInt(n);var ref=refs?refs.find(function(r){return r.id==ni;}):null;if(!ref)return'<span style="font-size:calc(9px * var(--fs-scale))">['+n+']</span>';var key=pfx+'_'+ni;refMap[key]=ref;var isH=ref.type=='hadith';var srcKey=sourceKey(isH?'hadith':'quran',ref);return'<span class="tref '+(isH?'h':'q')+'" data-key="'+key+'" data-src="'+srcKey+'" onclick="showRefPop(this,\''+key+'\')">['+n+']</span>';});}
+function mkSrc(s,type,F,hq){var su=s.surah||s.s||'',ay=s.ayah||s.a||'',bk=s.book||s.b||'',nm=s.num||'';var isH=type=='hadith';var note=F?(s.note||s.fa||s.noteFa):(s.noteEn||s.en);var ar=s.textAr||s.ar||'';var lnk=isH?(bk&&nm?'https://sunnah.com/'+bk+':'+nm:''):(su&&ay?'https://quran.com/'+su+'/'+ay:'');var ref=isH?(bk+(nm?' : '+nm:'')):(F?'سوره '+su+'، آیه '+ay:'Surah '+su+', Ayah '+ay);var h='<div class="src-box '+(isH?'h':'q')+'"><div class="src-top"><span class="src-badge '+(isH?'h':'q')+'">'+(isH?(F?'حدیث':'Hadith'):(F?'قرآن':'Quran'))+'</span><span class="src-ref '+(isH?'h':'q')+'">'+E(ref)+'</span>';if(lnk)h+='<a class="ext-link '+(isH?'h':'q')+'" href="'+lnk+'" target="_blank">🔗 '+(isH?'Sunnah.com':'Quran.com')+'</a>';h+='</div>';if(ar)h+='<div class="src-ar">'+hl(ar,hq)+'</div>';if(note)h+='<div class="src-note" style="direction:'+(F?'rtl':'ltr')+';text-align:'+(F?'right':'left')+'">'+hl(note,hq)+'</div>';return h+'</div>';}
+function tErab(n){var v=verses.find(function(x){return String(x.num||x.n)==n;});if(!v)return;var el=$('vt_'+n),btn=$('et_'+n);if(!el||!btn)return;var isOn=btn.classList.contains('on');var src=isOn?(v.text||v.t):(v.textErab||v.e);el.innerHTML=(src||'').split('\n').filter(Boolean).map(function(l){return wordsClickableHtml(l.trim(),n);}).join('<br>');btn.classList.toggle('on',!isOn);var F=prefs.lang=='fa';btn.textContent=isOn?(F?'◇ با اعراب':'◇ Diacritics'):(F?'◆ بدون اعراب':'◆ Plain');}
+
+function getQH(v){var qs=[],hs=[];if(Array.isArray(v.sources)){v.sources.forEach(function(s){if(s.type==='hadith')hs.push(s);else qs.push(s);});}else if(v.sources&&(Array.isArray(v.sources.quran)||Array.isArray(v.sources.hadith))){qs=v.sources.quran||[];hs=v.sources.hadith||[];}else{qs=v.q||[];hs=v.h||[];}return{qs:qs,hs:hs};}
+
+var audioSequenceIds={};
+function getLessonParts(l){
+  var ids=l.verseIds||l.v||[];
+  var breaks=l.partBreaks;
+  if(!breaks||!breaks.length)return[{verseIds:ids,partIdx:null}];
+  var parts=[];var cursor=0;
+  breaks.forEach(function(b){
+    var localIdx=ids.indexOf(b);
+    if(localIdx<=cursor||localIdx<0)return;
+    parts.push(ids.slice(cursor,localIdx));
+    cursor=localIdx;
+  });
+  parts.push(ids.slice(cursor));
+  return parts.filter(function(p){return p.length;}).map(function(p,i){return {verseIds:p,partIdx:i};});
+}
+function lessonHasSubParts(li){var l=lessons[li];if(!l)return false;return getLessonParts(l).length>1;}
+function buildLessonIntroHtml(li){
+  var l=lessons[li];if(!l)return'';
+  var F=prefs.lang=='fa';
+  var ids=l.verseIds||l.v||[];
+  var vs=ids.map(function(idVal){return resolveVerse(idVal);}).filter(Boolean);
+  if(!vs.length)return'';
+  var key=String(li);
+  audioSequenceIds[key]=ids;
+  var hasAnyAudio=vs.some(function(v){return!!v.audioUrl;});
+  var h='<div class="lesson-intro" id="li_'+key+'">';
+  h+='<div class="lesson-intro-hdr"><span class="lesson-intro-title">'+(F?'📜 ابیات درس':'📜 Lesson couplets')+'</span>';
+  if(hasAnyAudio)h+='<button class="lib-btn" id="lipbtn_'+key+'" onclick="toggleLessonAudio(\''+key+'\')" style="padding:5px 10px">▶️</button>';
+  h+='</div><div class="lesson-intro-body">';
+  vs.forEach(function(v){
+    var n=String(v.num||v.n||'');
+    var lns=(v.text||v.t||'').split('\n').filter(Boolean);
+    h+='<div class="li-verse" id="livrs_'+key+'_'+E(n)+'">'+lns.map(function(l){return E(l.trim());}).join('<br>')+'</div>';
+  });
+  h+='</div></div>';
+  return h;
+}
+function buildSubIntroHtml(li,page,isActive,F){
+  var vs=page.verseIds.map(function(idVal){return resolveVerse(idVal);}).filter(Boolean);
+  if(!vs.length)return'';
+  var key=li+'_'+page.partIdx;
+  audioSequenceIds[key]=page.verseIds;
+  var hasAnyAudio=vs.some(function(v){return!!v.audioUrl;});
+  var wc=0;
+  var h='<div class="lesson-intro" id="li_'+key+'">';
+  h+='<div class="lesson-intro-hdr"><span class="lesson-intro-title">'+(F?'📜 ریزدرس '+(page.partIdx+1):'📜 Part '+(page.partIdx+1))+'</span>';
+  if(hasAnyAudio)h+='<button class="lib-btn" id="lipbtn_'+key+'" onclick="toggleLessonAudio(\''+key+'\')" style="padding:5px 10px">▶️</button>';
+  h+='</div><div class="lesson-intro-body">';
+  vs.forEach(function(v){
+    var n=String(v.num||v.n||'');
+    var lns=(v.text||v.t||'').split('\n').filter(Boolean);
+    wc+=countWordsText(v.text||v.t||'');
+    h+='<div class="li-verse" id="livrs_'+key+'_'+E(n)+'">'+lns.map(function(l){return E(l.trim());}).join('<br>')+'</div>';
+  });
+  h+='</div></div>';
+  if(isActive){
+    var secs=secondsForWords(wc,WPM_NORMAL);
+    var state=lessonPageState[li];
+    if(state)state.pendingSeconds=secs;
+    var contLabel=F?'ادامه ▶':'Continue ▶';
+    h+='<div class="page-timer-bar"><div class="page-timer-track"><div class="page-timer-fill" id="pgfill_'+li+'" style="width:100%"></div></div><div class="page-timer-row"><span class="page-timer-txt" id="pgtimer_'+li+'">⏳ '+secs+'</span><div style="display:flex;gap:8px"><button class="lib-btn" id="pgskip_'+li+'" onclick="skipLessonPage('+li+')">'+(F?'رد کردن ⏭':'Skip ⏭')+'</button><button class="btn-p page-cont-btn" id="pgcontinue_'+li+'" disabled onclick="continueLessonPage('+li+')">'+contLabel+'</button></div></div></div>';
+  }
+  return h;
+}
+function stopAllAudio(){
+  if(verseAudioEl){verseAudioEl.pause();verseAudioEl=null;}
+  if(verseAudioN){setVerseAudioBtn(verseAudioN,'▶️');verseAudioN=null;}
+  stopLessonAudioSequence();
+}
+function setVerseAudioBtn(n,icon){var b=$('ap_'+n);if(b)b.textContent=icon;}
+function toggleVerseAudio(n,url){
+  if(verseAudioN===n&&verseAudioEl){
+    if(verseAudioEl.paused){
+      verseAudioEl.play().catch(function(){toast(prefs.lang=='fa'?'⚠️ پخش صدا ممکن نشد':'⚠️ Could not play audio');});
+      setVerseAudioBtn(n,'⏸️');
+    }else{
+      verseAudioEl.pause();
+      setVerseAudioBtn(n,'▶️');
+    }
+    return;
+  }
+  stopAllAudio();
+  verseAudioEl=new Audio(url);
+  verseAudioN=n;
+  verseAudioEl.play().catch(function(){toast(prefs.lang=='fa'?'⚠️ پخش صدا ممکن نشد':'⚠️ Could not play audio');});
+  setVerseAudioBtn(n,'⏸️');
+  verseAudioEl.onended=function(){setVerseAudioBtn(n,'▶️');verseAudioN=null;verseAudioEl=null;};
+}
+function setLessonAudioBtn(key,text){var b=$('lipbtn_'+key);if(b)b.textContent=text;}
+function toggleLessonAudio(key){
+  var F=prefs.lang=='fa';
+  if(String(lessonAudioLi)===String(key)&&lessonAudioEl){
+    if(lessonAudioEl.paused){
+      lessonAudioEl.play().catch(function(){toast(F?'⚠️ پخش صدا ممکن نشد':'⚠️ Could not play audio');});
+      setLessonAudioBtn(key,'⏸️');
+    }else{
+      lessonAudioEl.pause();
+      setLessonAudioBtn(key,'▶️');
+    }
+    return;
+  }
+  stopAllAudio();
+  var ids=audioSequenceIds[key]||[];
+  var vs=ids.map(function(idVal){return resolveVerse(idVal);}).filter(function(v){return v&&v.audioUrl;});
+  if(!vs.length){toast(F?'صدایی برای این بخش موجود نیست':'No audio available for this section');return;}
+  lessonAudioQueue=vs;lessonAudioIdx=0;lessonAudioLi=key;
+  setLessonAudioBtn(key,'⏸️');
+  playLessonAudioStep();
+}
+function playLessonAudioStep(){
+  if(lessonAudioIdx>=lessonAudioQueue.length){stopLessonAudioSequence();return;}
+  var v=lessonAudioQueue[lessonAudioIdx];
+  var n=String(v.num||v.n||'');
+  document.querySelectorAll('.li-verse.playing').forEach(function(x){x.classList.remove('playing');});
+  var el=$('livrs_'+lessonAudioLi+'_'+n);
+  if(el){el.classList.add('playing');el.scrollIntoView({behavior:'smooth',block:'center'});}
+  lessonAudioEl=new Audio(v.audioUrl);
+  lessonAudioEl.play().catch(function(){toast(prefs.lang=='fa'?'⚠️ پخش صدا ممکن نشد':'⚠️ Could not play audio');stopLessonAudioSequence();});
+  lessonAudioEl.onended=function(){lessonAudioIdx++;playLessonAudioStep();};
+}
+function stopLessonAudioSequence(){
+  if(lessonAudioEl){lessonAudioEl.pause();lessonAudioEl=null;}
+  document.querySelectorAll('.li-verse.playing').forEach(function(x){x.classList.remove('playing');});
+  if(lessonAudioLi!=null)setLessonAudioBtn(lessonAudioLi,'▶️');
+  lessonAudioLi=null;lessonAudioQueue=[];lessonAudioIdx=0;
+}
+function searchWordInVerse(word,n){
+  var sel=window.getSelection();
+  if(sel&&sel.toString().length>0)return;
+  var v=resolveVerse(n);if(!v)return;
+  var fullText=(v.text||v.t||'').split('\n').map(function(l){return l.trim();}).filter(Boolean).join(' ');
+  var F=prefs.lang=='fa';
+  var q=F?('معنای لغوی «'+word+'» در بیت «'+fullText+'» چیست؟'):('What is the literal English translation of \''+word+'\' in the couplet \''+fullText+'\' in English?');
+  window.open('https://www.google.com/search?q='+encodeURIComponent(q),'_blank');
+}
+function wordsClickableHtml(lineText,n){
+  return lineText.split(/\s+/).filter(Boolean).map(function(w){
+    return '<span class="wclk" onclick="searchWordInVerse(\''+A(w)+'\','+n+')">'+E(w)+'</span>';
+  }).join(' ');
+}
+function pageVerseHtml(v,F){var n=String(v.num||v.n||'');var ud=gv(n);var hasErab=!!(v.textErab||v.e);var showErabDefault=(prefs.erabAll===true&&hasErab);var srcText=showErabDefault?(v.textErab||v.e):(v.text||v.t);var lns=(srcText||'').split('\n').filter(Boolean);var maana=F?(v.maana||v.fa):(v.maanaEn||v.en);var au=v.audioUrl||'';var h='<div class="vc-top"><span class="vnum">'+(F?'بیت ':'Couplet ')+E(n)+'</span><div class="vacts">'+(au?'<button class="va" id="ap_'+E(n)+'" onclick="toggleVerseAudio(\''+E(n)+'\',\''+A(au)+'\')">▶️</button>':'')+'<button class="va'+(ud.liked?' lk':'')+'" id="lk_'+E(n)+'" onclick="tLike(\''+E(n)+'\')">'+(ud.liked?'❤️':'🤍')+'</button><button class="va" onclick="shareVerse(\''+E(n)+'\')">📤</button></div></div>';h+='<div class="vtxt allow-copy" id="vt_'+E(n)+'">'+lns.map(function(l){return wordsClickableHtml(l.trim(),n);}).join('<br>')+'</div>';if(hasErab)h+='<div class="er-r"><button class="etgl'+(showErabDefault?' on':'')+'" id="et_'+E(n)+'" onclick="tErab(\''+E(n)+'\')">'+(showErabDefault?(F?'◆ بدون اعراب':'◆ Plain'):(F?'◇ با اعراب':'◇ Diacritics'))+'</button></div>';if(maana)h+='<div class="vmean" id="vm_'+E(n)+'"><div class="vmean-tx" style="direction:'+(F?'rtl':'ltr')+';text-align:'+(F?'right':'left')+'">'+E(maana)+'</div></div>';h+='<div class="note-sec"><div class="note-lbl">📝 '+(F?'یادداشت شخصی':'My Note')+'</div>';h+='<textarea class="note-ta" id="nt_'+E(n)+'" rows="2" style="direction:'+(F?'rtl':'ltr')+';text-align:'+(F?'right':'left')+'" placeholder="'+(F?'یادداشت...':'Note...')+'" oninput="onNote(\''+E(n)+'\',this.value)">'+E(ud.note)+'</textarea>';h+='<div class="note-saved" id="ni_'+E(n)+'"></div></div>';return h;}
+
+function buildLessonPages(li){
+  var l=lessons[li];if(!l)return[];
+  var F=prefs.lang=='fa';
+  var parts=getLessonParts(l);
+  var pages=[];
+  parts.forEach(function(part){
+    if(part.partIdx!=null)pages.push({type:'subintro',partIdx:part.partIdx,verseIds:part.verseIds});
+    part.verseIds.forEach(function(idVal){
+      var v=resolveVerse(idVal);if(!v||!(v.num||v.n))return;
+      var n=String(v.num||v.n);
+      pages.push({type:'verse',n:n});
+      var qh=getQH(v);if(qh.qs.length||qh.hs.length)pages.push({type:'qh',n:n});
+      var tafsirText=F?(v.tafsir||v.tf):(v.tafsirEn||v.te);if(tafsirText)pages.push({type:'tafsir',n:n});
+      var refl=v.reflections||[];var hasReflText=refl.some(function(q){return F?q.fa:q.en;});if(hasReflText)pages.push({type:'refl',n:n});
+    });
+  });
+  return pages;
+}
+function sourceKey(type,s){if(type==='hadith')return'h_'+(s.book||s.b||'')+'_'+(s.num||'');return'q_'+(s.surah||s.s||'')+'_'+(s.ayah||s.a||'');}
+function pushSourceLog(type,s,n,origin){var arr=type==='hadith'?(refData.hadithLog||(refData.hadithLog=[])):(refData.quranLog||(refData.quranLog=[]));var key=sourceKey(type,s);if(arr.some(function(x){return x.key===key;}))return;arr.unshift({key:key,ref:s,n:n,origin:origin,date:new Date().toLocaleDateString(prefs.lang=='fa'?'fa-IR':'en-US')});}
+function collectPageSources(li,page){
+  var v=resolveVerse(page.n);if(!v)return;var F=prefs.lang=='fa';
+  if(page.type=='verse'){
+    if(v.isShahBeyt||v.sh){var arr=refData.sbrLog||(refData.sbrLog=[]);if(!arr.some(function(x){return x.n===page.n;}))arr.unshift({n:page.n,date:new Date().toLocaleDateString(F?'fa-IR':'en-US')});}
+    return;
+  }
+  if(!isContentUnlocked(page.n,page.type))return;
+  if(page.type=='qh'){var qh=getQH(v);qh.qs.forEach(function(s){pushSourceLog('quran',s,page.n,'qh');});qh.hs.forEach(function(s){pushSourceLog('hadith',s,page.n,'qh');});}
+  else if(page.type=='tafsir'){var trefs=v.tafsirRefs||v.refs||[];trefs.forEach(function(r){pushSourceLog(r.type==='hadith'?'hadith':'quran',r,page.n,'tafsir');});}
+  else if(page.type=='refl'){(v.reflections||[]).forEach(function(q,qi){if(!(q.fa||q.en))return;var already=refData.log.some(function(r){return r.n===page.n&&r.qi===qi;});if(!already){refData.log.unshift({n:page.n,qi:qi,fa:q.fa||'',en:q.en||'',refs:q.refs||[],date:new Date().toLocaleDateString(F?'fa-IR':'en-US')});}(q.refs||[]).forEach(function(r){pushSourceLog(r.type==='hadith'?'hadith':'quran',r,page.n,'refl');});});}
+}
+function pageKey(li,page){
+  if(page.type==='subintro')return 'l'+li+'_sub'+page.partIdx+'_subintro';
+  return page.n+'_'+page.type;
+}
+function ensureLessonPages(li){
+  if(lessonPageState[li])return;
+  var pages=buildLessonPages(li);
+  if(!refData.pageAwarded)refData.pageAwarded={};
+  var idx=0;
+  for(var i=0;i<pages.length;i++){var k=pageKey(li,pages[i]);if(!refData.pageAwarded[k]){idx=i;break;}idx=i+1;}
+  if(pages.length===0||idx>=pages.length){
+    if(!streakData.done)streakData.done=[];
+    if(streakData.done.indexOf(li)<0){streakData.done.push(li);addPts(PT_LESSON);}
+    lessonPageState[li]=null;
+    return;
+  }
+  lessonPageState[li]={pages:pages,idx:idx,timer:null,remaining:0,timerDone:false,pendingSeconds:MIN_SECONDS};
+}
+function buyContentPage(li,n,type){
+  var F=prefs.lang=='fa';var price=type=='tafsir'?30:20;
+  if(!spendPts(price)){toast(F?'💎 امتیاز کافی نداری (نیاز: '+price+')':'Not enough 💎 (need '+price+')');return;}
+  if(!refData.purchasedContent)refData.purchasedContent={};
+  refData.purchasedContent[n+'_'+type]=true;
+  collectPageSources(li,{n:n,type:type});
+  sv(RK,refData);
+  toast(F?'✓ باز شد':'✓ Unlocked');
+  if(lessonPageState[li])refreshActiveSection(li);
+  else{var lb=$('lb_'+li);if(lb)lb.innerHTML=buildFinalLessonHtml(li);}
+}
+function buildSectionHtml(li,v,type,isActive,F){
+  var n=String(v.num||v.n);
+  if((type=='qh'||type=='tafsir'||type=='refl')&&!isContentUnlocked(n,type)){
+    var price=type=='tafsir'?30:20;
+    var label=type=='qh'?(F?'ارتباط قرآنی/حدیثی':'Quranic/Hadith Links'):type=='tafsir'?(F?'تفسیر':'Commentary'):(F?'تدبر':'Reflection');
+    var h2='<div class="lock-msg"><div style="font-size:calc(13px * var(--fs-scale));font-weight:700;margin-bottom:8px">🔒 '+label+'</div><button class="btn-p" style="max-width:220px;margin:0 auto" onclick="buyContentPage('+li+',\''+n+'\',\''+type+'\')">💎 '+(F?'خرید ('+price+')':'Buy ('+price+')')+'</button>';
+    if(isActive)h2+='<div style="margin-top:8px"><button class="lib-btn" onclick="skipLessonPage('+li+')">'+(F?'رد کردن ⏭':'Skip ⏭')+'</button></div>';
+    h2+='</div>';
+    return '<div id="sec_'+n+'_'+type+'">'+h2+'</div>';
+  }
+  var h='';var wc=0;
+  if(type=='verse'){h+=pageVerseHtml(v,F);wc=countWordsText(v.text||v.t||'')+countWordsText(F?(v.maana||v.fa||''):(v.maanaEn||v.en||''));}
+  else if(type=='qh'){h+='<div style="font-size:calc(13px * var(--fs-scale));font-weight:700;color:var(--color-text-primary);margin:14px 0 10px">📚 '+(F?'ارتباط قرآنی/حدیثی':'Quranic/Hadith Links')+'</div>';var qh=getQH(v);qh.qs.forEach(function(s){h+=mkSrc(s,'quran',F);wc+=countWordsText(s.textAr||s.ar||'')+countWordsText(F?(s.note||s.fa||s.noteFa||''):(s.noteEn||s.en||''));});qh.hs.forEach(function(s){h+=mkSrc(s,'hadith',F);wc+=countWordsText(F?(s.note||s.fa||s.noteFa||''):(s.noteEn||s.en||''));});}
+  else if(type=='tafsir'){var tafsir=F?(v.tafsir||v.tf):(v.tafsirEn||v.te);var refs=v.tafsirRefs||v.refs||[];h+='<div style="font-size:calc(13px * var(--fs-scale));font-weight:700;color:var(--tafsir);margin:14px 0 10px"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg> '+(F?'تفسیر':'Commentary')+'</div>';h+='<div class="tf-box" style="direction:'+(F?'rtl':'ltr')+';text-align:'+(F?'right':'left')+'">'+renderTf(tafsir,refs,prefs.lang,n)+'</div>';wc=countWordsText((tafsir||'').replace(/\[\d+\]/g,''));}
+  else if(type=='refl'){h+='<div style="font-size:calc(13px * var(--fs-scale));font-weight:700;color:var(--refl-c);margin:14px 0 10px"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#4C3A8C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M12,18.8 C5.2,14 5.2,7.6 9.2,6.8 C10.8,6.4 12,7.6 12,8.8 C12,7.6 13.2,6.4 14.8,6.8 C18.8,7.6 18.8,14 12,18.8 Z"/><path d="M12,1.2 C14,3.2 14,5.2 12,7.2 C10,5.2 10,3.2 12,1.2 Z"/></svg> '+(F?'تدبر':'Reflection')+'</div>';h+='<div style="background:var(--refl-bg);border:0.5px solid var(--refl-bd);border-radius:var(--border-radius-lg);padding:12px 13px">';var refl=v.reflections||[];refl.forEach(function(q,qi){var txt=F?(q.fa||''):(q.en||'');if(!txt)return;wc+=countWordsText(txt);h+='<div class="refl-card"><div class="refl-q" style="direction:'+(F?'rtl':'ltr')+';text-align:'+(F?'right':'left')+'">'+E(txt);(q.refs||[]).forEach(function(r,ri){var k='rf_'+n+'_'+qi+'_'+ri;refMap[k]=r;var isH=r.type==='hadith';var srcKey=sourceKey(isH?'hadith':'quran',r);h+=' <span class="tref '+(isH?'h':'q')+'" data-key="'+k+'" data-src="'+srcKey+'" onclick="showRefPop(this,\''+k+'\')">'+(ri+1)+'</span>';});h+='</div></div>';});h+='</div>';}
+  if(isActive){
+    var wpm=type=='refl'?WPM_REFL:WPM_NORMAL;
+    var secs=secondsForWords(wc,wpm);
+    var state=lessonPageState[li];
+    if(state)state.pendingSeconds=secs;
+    var nextPage=state?state.pages[state.idx+1]:null;
+    var isLast=state?(state.idx>=state.pages.length-1):true;
+    var contLabel=isLast?(F?'پایان درس ▶':'Finish Lesson ▶'):(nextPage&&nextPage.type=='verse')?(F?'بیت بعدی ▶':'Next Couplet ▶'):(F?'ادامه ▶':'Continue ▶');
+    h+='<div class="page-timer-bar"><div class="page-timer-track"><div class="page-timer-fill" id="pgfill_'+li+'" style="width:100%"></div></div><div class="page-timer-row"><span class="page-timer-txt" id="pgtimer_'+li+'">⏳ '+secs+'</span><div style="display:flex;gap:8px"><button class="lib-btn" id="pgskip_'+li+'" onclick="skipLessonPage('+li+')">'+(F?'رد کردن ⏭':'Skip ⏭')+'</button><button class="btn-p page-cont-btn" id="pgcontinue_'+li+'" disabled onclick="continueLessonPage('+li+')">'+contLabel+'</button></div></div></div>';
+  }
+  if(type=='qh'||type=='tafsir'||type=='refl')return '<div id="sec_'+n+'_'+type+'">'+h+'</div>';
+  return h;
+}
+function buildCumulativeHtml(li){
+  var state=lessonPageState[li];if(!state)return'';var F=prefs.lang=='fa';
+  var h='';var curVcardN=null;
+  for(var i=0;i<=state.idx&&i<state.pages.length;i++){
+    var pg=state.pages[i];
+    var isActive=(i===state.idx);
+    if(pg.type==='subintro'){
+      if(curVcardN!==null){h+='</div>';curVcardN=null;}
+      h+=buildSubIntroHtml(li,pg,isActive,F);
+      continue;
+    }
+    if(curVcardN!==pg.n){
+      if(curVcardN!==null)h+='</div>';
+      h+='<div class="vcard" id="vc_'+pg.n+'">';
+      curVcardN=pg.n;
+    }
+    var v=resolveVerse(pg.n);
+    h+=buildSectionHtml(li,v,pg.type,isActive,F);
+  }
+  if(curVcardN!==null)h+='</div>';
+  return h;
+}
+function buildFinalLessonHtml(li){
+  var F=prefs.lang=='fa';var l=lessons[li];if(!l)return'';
+  var parts=getLessonParts(l);
+  var h='';
+  parts.forEach(function(part){
+    if(part.partIdx!=null)h+=buildSubIntroHtml(li,{type:'subintro',partIdx:part.partIdx,verseIds:part.verseIds},false,F);
+    part.verseIds.forEach(function(idVal){
+      var v=resolveVerse(idVal);if(!v||!(v.num||v.n))return;
+      var n=String(v.num||v.n);
+      h+='<div class="vcard" id="vc_'+n+'">';
+      h+=buildSectionHtml(li,v,'verse',false,F);
+      var qh=getQH(v);if(qh.qs.length||qh.hs.length)h+=buildSectionHtml(li,v,'qh',false,F);
+      var tafsirText=F?(v.tafsir||v.tf):(v.tafsirEn||v.te);if(tafsirText)h+=buildSectionHtml(li,v,'tafsir',false,F);
+      var refl=v.reflections||[];var hasReflText=refl.some(function(q){return F?q.fa:q.en;});if(hasReflText)h+=buildSectionHtml(li,v,'refl',false,F);
+      h+='</div>';
+    });
+  });
+  return h;
+}
+function startPageTimer(li,totalSeconds){var state=lessonPageState[li];if(!state)return;if(state.timer){clearInterval(state.timer);}state.remaining=totalSeconds;state.timerDone=false;updateTimerUI(li);state.timer=setInterval(function(){state.remaining--;if(state.remaining<=0){state.remaining=0;state.timerDone=true;clearInterval(state.timer);state.timer=null;}updateTimerUI(li);},1000);}
+function updateTimerUI(li){var state=lessonPageState[li];if(!state)return;var F=prefs.lang=='fa';var el=$('pgtimer_'+li);if(el)el.textContent=state.timerDone?(F?'✓ آماده':'✓ Ready'):('⏳ '+state.remaining);var fill=$('pgfill_'+li);if(fill){var pct=state.pendingSeconds>0?Math.max(0,state.remaining/state.pendingSeconds*100):0;fill.style.width=pct+'%';}var cbtn=$('pgcontinue_'+li);if(cbtn)cbtn.disabled=!state.timerDone;var sbtn=$('pgskip_'+li);if(sbtn)sbtn.style.display=state.timerDone?'none':'inline-block';}
+function currentActiveTarget(li){var state=lessonPageState[li];if(!state)return null;var pending=state.pages[state.idx];if(!pending)return null;if(pending.type==='subintro')return $('li_'+li+'_'+pending.partIdx);return pending.type==='verse'?$('vc_'+pending.n):$('sec_'+pending.n+'_'+pending.type);}
+function renderLessonBody(li){
+  var lb=$('lb_'+li);if(!lb)return;
+  var state=lessonPageState[li];
+  var intro=lessonHasSubParts(li)?'':buildLessonIntroHtml(li);
+  if(!state){lb.innerHTML=intro+buildFinalLessonHtml(li);return;}
+  lb.innerHTML=intro+buildCumulativeHtml(li);
+  var pending=state.pages[state.idx];
+  if(pending&&(pending.type=='subintro'||pending.type=='verse'||isContentUnlocked(pending.n,pending.type)))startPageTimer(li,state.pendingSeconds||MIN_SECONDS);
+}
+function scrollToActivePage(li){
+  setTimeout(function(){
+    var target=currentActiveTarget(li);
+    if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+  },60);
+}
+function refreshActiveSection(li){renderLessonBody(li);scrollToActivePage(li);}
+function advanceLessonPage(li){renderLessonBody(li);scrollToActivePage(li);}
+function continueLessonPage(li){
+  var state=lessonPageState[li];if(!state||!state.timerDone)return;
+  var page=state.pages[state.idx];var F=prefs.lang=='fa';
+  if(!refData.pageAwarded)refData.pageAwarded={};
+  var pkey=pageKey(li,page);
+  if(!refData.pageAwarded[pkey]){
+    var pts=page.type=='verse'?PT_VERSE:page.type=='qh'?PT_QH:page.type=='tafsir'?PT_TAFSIR:page.type=='refl'?PT_REFL:0;
+    refData.pageAwarded[pkey]=true;
+    if(page.type=='verse')refData.studied[page.n]=true;
+    sv(RK,refData);
+    if(pts>0){addPts(pts);toast('+'+pts+' 💎');}
+    markAct();
+  }
+  if(page.type!=='subintro'){collectPageSources(li,page);sv(RK,refData);}
+  if(state.timer)clearInterval(state.timer);
+  state.idx++;
+  if(state.idx>=state.pages.length){finishLessonPaging(li);return;}
+  advanceLessonPage(li);
+}
+function skipLessonPage(li){var state=lessonPageState[li];if(!state)return;var page=state.pages[state.idx];if(page.type!=='subintro'){collectPageSources(li,page);sv(RK,refData);}if(state.timer)clearInterval(state.timer);state.idx++;if(state.idx>=state.pages.length){finishLessonPaging(li);return;}advanceLessonPage(li);}
+function finishLessonPaging(li){var F=prefs.lang=='fa';if(!streakData.done)streakData.done=[];if(streakData.done.indexOf(li)<0){streakData.done.push(li);addPts(PT_LESSON);markAct();toast(F?'✓ درس تمام شد! +'+PT_LESSON+' 💎 🎉':'✓ Done! +'+PT_LESSON+' 💎 🎉');}lessonPageState[li]=null;render();scrollToNextLessonStart(li);}
+function startPendingTimers(){lessons.forEach(function(l,li){var state=lessonPageState[li];if(!state)return;var lb=$('lb_'+li);if(!lb||lb.style.display==='none')return;var pending=state.pages[state.idx];if(pending&&(pending.type=='subintro'||pending.type=='verse'||isContentUnlocked(pending.n,pending.type)))startPageTimer(li,state.pendingSeconds||MIN_SECONDS);});}
+
+var numIndex=null;
+function buildNumIndex(){numIndex={};verses.forEach(function(v,i){var n=v&&(v.num||v.n);if(n!=null&&n!=='')numIndex[String(n)]=i;});}
+function resolveVerse(id){if(id==null)return null;if(numIndex&&numIndex.hasOwnProperty(String(id)))return verses[numIndex[String(id)]];if(verses[id]&&(verses[id].num||verses[id].n))return verses[id];return null;}
+function isDone(li){return(streakData.done||[]).indexOf(li)>=0;}
+function isOpen(li){return li==0||isDone(li-1)||(prefs.unlockedLessons&&prefs.unlockedLessons.indexOf(li)>=0);}
+function firstOpenIdx(){for(var i=0;i<lessons.length;i++){if(isOpen(i)&&!isDone(i))return i;}return 0;}
+function scrollToNextLessonStart(prevLi){var nextLi=prevLi+1;if(nextLi>=lessons.length)return;setTimeout(function(){var cards=document.querySelectorAll('.lcard');var el=cards[nextLi];if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},250);}
+function scrollToCurrentStudyPosition(){
+  if(!hasContent||!lessons.length)return;
+  var li=null;
+  for(var i=0;i<lessons.length;i++){if(lessonPageState[i]){li=i;break;}}
+  if(li===null&&prefs.lastReadLessonIdx!=null&&lessons[prefs.lastReadLessonIdx])li=prefs.lastReadLessonIdx;
+  if(li===null)li=firstOpenIdx();
+  if(li==null||li<0||!lessons[li])return;
+  focusedLesson=li;render();focusedLesson=null;
+  setTimeout(function(){
+    var sa=$('SA');
+    if(prefs.lastReadScrollTop!=null&&sa){sa.scrollTop=prefs.lastReadScrollTop;return;}
+    var target=currentActiveTarget(li);
+    if(!target){var cards=document.querySelectorAll('.lcard');target=cards[li];}
+    if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+  },200);
+}
+function openReadTab(){gT('read');scrollToCurrentStudyPosition();}
+(function(){
+  var saveTimer=null;
+  function bindScrollTracker(){
+    var sa=$('SA');
+    if(!sa)return;
+    sa.addEventListener('scroll',function(){
+      if(curTab!=='read')return;
+      clearTimeout(saveTimer);
+      saveTimer=setTimeout(function(){
+        prefs.lastReadScrollTop=sa.scrollTop;
+        sv(PK,prefs);
+      },400);
+    });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bindScrollTracker);
+  else bindScrollTracker();
+})();
+
+
+function render(){
+  if(!hasContent){renderLibrary();return;}
+  var F=prefs.lang=='fa',h='';
+  if(!lessons.length){H('vw-read','');return;}
+  h+=storyHeaderHtml(F);
+  var dc=(streakData.done||[]).length;
+  h+='<div class="prog-wrap"><div class="prog-top"><span class="prog-lbl">'+(F?'پیشرفت درس\u200cها':'Progress')+'</span><span class="prog-cnt">'+dc+'/'+lessons.length+'</span></div><div class="prog-bar"><div class="prog-fill" style="width:'+Math.round(dc/lessons.length*100)+'%"></div></div></div>';
+  var useFocus=focusedLesson!=null;
+  var firstOpen=firstOpenIdx();
+  lessons.forEach(function(l,li){
+    var ids=l.verseIds||l.v||[];
+    var title=F?(l.title||l.t):(l.titleEn||l.e||l.title||l.t);
+    var open=isOpen(li);
+    if(open&&!isDone(li))ensureLessonPages(li);
+    var done=isDone(li);
+    var cls=done?'done':open?'open':'locked';
+    h+='<div class="lcard">';
+    h+='<div class="lhdr '+cls+'"'+(open||done?' onclick="tglL('+li+')"':'')+'>';
+    h+='<div class="l-ico">'+(done?'✅':open?'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg>':'🔒')+'</div>';
+    h+='<div class="lhi"><div class="lt">'+E(title||'')+'</div><div class="lmeta"><span class="lbdg">'+ids.length+(F?' بیت':' verses')+'</span>';
+    if(done)h+='<span class="lbdg">'+(F?'✓ تمام':'✓ Done')+'</span>';
+    h+='</div></div></div>';
+    if(cls==='locked'){
+      h+='<div class="lock-msg">🔒 '+(F?'این درس قفل است. درس قبلی را تکمیل کن.':'Locked. Complete the previous lesson first.')+'<div style="margin-top:8px"><button class="lib-btn" onclick="openUnlockSheet(\'lesson\','+li+',\''+A(title||'')+'\')">🔓 '+(F?'باز کردن (پریمیوم)':'Unlock (Premium)')+'</button></div></div>';
+    } else if(done){
+      var showD=useFocus?(li===focusedLesson):false;
+      h+='<div class="lbody" id="lb_'+li+'" style="display:'+(showD?'block':'none')+'">'+buildLessonIntroHtml(li)+buildFinalLessonHtml(li)+'</div>';
+    } else {
+      var show=useFocus?(li===focusedLesson):(li===firstOpen);
+      var state=lessonPageState[li];
+      h+='<div class="lbody" id="lb_'+li+'" style="display:'+(show?'block':'none')+'">';
+      h+=buildLessonIntroHtml(li);
+      h+= state?buildCumulativeHtml(li):buildFinalLessonHtml(li);
+      h+='</div>';
+    }
+    h+='</div>';
+  });
+  H('vw-read',h);
+  startPendingTimers();
+}
+function storyHeaderHtml(F){
+  var book=manifest&&manifest.books?manifest.books.find(function(b){return b.id===currentBookId;}):null;
+  var story=book&&book.stories?book.stories.find(function(s){return s.id===currentStoryId;}):null;
+  var bookTitle=book?(F?book.title:(book.titleEn||book.title)):'';
+  var storyTitle=story?(F?story.title:(story.titleEn||story.title)):'';
+  return '<div class="storybanner"><div class="storybanner-sub" style="display:flex;align-items:center;justify-content:space-between;gap:8px"><span>'+E(bookTitle)+'</span><span style="cursor:pointer;text-decoration:underline" onclick="goToLibrary()">📚 '+(F?'کتابخانه':'Library')+'</span></div><div class="storybanner-t">'+E(storyTitle)+'</div></div>';
+}
+var manifestError=null;
+async function loadManifest(){
+  manifestError=null;
+  try{
+    var res=await fetch(MANIFEST_URL,{cache:'no-store'});
+    if(!res.ok){manifestError='HTTP '+res.status+' at '+MANIFEST_URL;manifest=null;return;}
+    var text=await res.text();
+    try{
+      manifest=JSON.parse(text);
+    }catch(pe){
+      manifestError='Fetched OK but not valid JSON (got '+text.length+' bytes starting with: '+text.slice(0,60)+')';
+      manifest=null;
+    }
+  }catch(e){
+    manifestError='Network error: '+(e&&e.message?e.message:e);
+    manifest=null;
+  }
+}
+function renderLibrary(){
+  var F=prefs.lang=='fa';
+  if(!manifest||!manifest.books||!manifest.books.length){
+    var detail=manifestError?('<div class="dbg-box" style="direction:ltr;text-align:left;margin-bottom:14px">'+E(manifestError)+'</div>'):'';
+    H('vw-read','<div style="padding:24px 16px;text-align:center"><div style="font-size:calc(48px * var(--fs-scale));margin-bottom:12px">📚</div><div style="font-size:calc(15px * var(--fs-scale));font-weight:700;color:var(--color-text-primary);margin-bottom:8px">'+(F?'محتوایی یافت نشد':'No content found')+'</div><div style="font-size:calc(12px * var(--fs-scale));color:var(--color-text-tertiary);line-height:1.8;margin-bottom:16px">'+(F?'فایل manifest.json در دسترس نیست یا خالی است.':'manifest.json is unreachable or empty.')+'</div>'+detail+'<div style="font-size:calc(11px * var(--fs-scale));color:var(--color-text-tertiary);margin-bottom:10px">'+(F?'در حال تلاش برای:':'Trying URL:')+' <span style="direction:ltr;display:inline-block">'+E(MANIFEST_URL)+'</span></div><button class="btn-p" onclick="retryLibrary()">'+(F?'🔄 تلاش دوباره':'🔄 Retry')+'</button></div>');
+    return;
+  }
+  var h='<div class="lib-wrap">';
+  manifest.books.forEach(function(book){
+    var bookTitle=F?book.title:(book.titleEn||book.title);
+    var stories=book.stories||[];
+    h+='<div class="lib-book"><div class="lib-book-title">📖 '+E(bookTitle)+'</div>';
+    if(!stories.length){
+      h+='<div class="lib-empty">'+(F?'به\u200cزودی':'Coming soon')+'</div>';
+    }else{
+      h+='<div class="lib-story-list">';
+      stories.forEach(function(story,si){
+        var storyTitle=F?story.title:(story.titleEn||story.title);
+        h+='<div class="lib-story-row" onclick="selectStory('+book.id+',\''+A(story.id)+'\')"><span class="lib-story-n">'+(si+1)+'</span><span class="lib-story-t">'+E(storyTitle)+'</span><span class="lib-story-arrow">'+(F?'‹':'›')+'</span></div>';
+      });
+      h+='</div>';
+    }
+    h+='</div>';
+  });
+  h+='</div>';
+  H('vw-read',h);
+}
+function retryLibrary(){loadManifest().then(renderLibrary);}
+async function selectStory(bookId,storyId){
+  var F=prefs.lang=='fa';
+  var book=manifest&&manifest.books?manifest.books.find(function(b){return b.id===bookId;}):null;
+  var story=book&&book.stories?book.stories.find(function(s){return s.id===storyId;}):null;
+  if(!story){toast(F?'داستان یافت نشد':'Story not found');return;}
+  try{
+    var res=await fetch(CONTENT_BASE+story.file,{cache:'no-store'});
+    if(!res.ok)throw new Error('story fetch failed: '+res.status);
+    var data=await res.json();
+    verses=data.verses||[];lessons=data.lessons||[];
+    if(!verses.length){toast(F?'این داستان محتوایی ندارد':'This story has no content');return;}
+    hasContent=true;currentBookId=bookId;currentStoryId=storyId;
+    buildNumIndex();
+    lessonPageState={};focusedLesson=null;
+    prefs.lastBookId=bookId;prefs.lastStoryId=storyId;
+    delete prefs.lastReadScrollTop;delete prefs.lastReadLessonIdx;
+    sv(PK,prefs);
+    render();
+  }catch(e){
+    toast(F?'⚠️ بارگذاری داستان ناموفق بود':'⚠️ Failed to load story');
+  }
+}
+function goToLibrary(){
+  hasContent=false;verses=[];lessons=[];currentBookId=null;currentStoryId=null;
+  lessonPageState={};focusedLesson=null;
+  render();
+}
+function tglL(i){var b=$('lb_'+i);if(!b)return;var opening=b.style.display!=='block';b.style.display=opening?'block':'none';if(opening){prefs.lastReadLessonIdx=i;sv(PK,prefs);}if(opening&&!isDone(i)){ensureLessonPages(i);renderLessonBody(i);}else{var state=lessonPageState[i];if(state&&state.timer){clearInterval(state.timer);state.timer=null;}}}
+
+function getThemes(){var t={};verses.forEach(function(v){(v.themes||[]).forEach(function(th){if(th)t[th]=(t[th]||0)+1;});});return Object.keys(t).sort(function(a,b){return t[b]-t[a];});}
+var curSearchScope='all';
+function scopeLabels(F){return F?{all:'همه',verses:'بیت\u200cها',quran:'آیه\u200cها',hadith:'حدیث\u200cها',tafsir:'تفسیرها',refl:'تدبرها'}:{all:'All',verses:'Couplets+Numbers',quran:'Ayahs+meaning',hadith:'Hadiths+meaning',tafsir:'Commentaries',refl:'Reflections'};}
+function renderSearch(){
+  var F=prefs.lang=='fa';var prem=isPremium();var lbl=scopeLabels(F);
+  var h='<div class="search-sticky">';
+  h+='<div class="search-wrap"><span style="font-size:calc(16px * var(--fs-scale));color:var(--color-text-tertiary)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5b6472" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><circle cx="10" cy="10" r="5.2"/><line x1="13.6" y1="13.6" x2="19.6" y2="19.6" stroke-width="2.6"/></svg></span><input class="search-inp" id="srch" type="text" placeholder="'+(F?'جستجوی متن، معنا یا شماره بیت...':'Search text, meaning or couplet number...')+'" value="'+A(curQ)+'" oninput="'+(prem?'doSrch(this.value)':'onSearchInputBasic(this.value)')+'"></div>';
+  h+='<div style="margin-top:8px"><select id="scope-sel" onchange="setSearchScope(this.value)" style="width:100%;border:0.5px solid var(--color-border-secondary);border-radius:20px;padding:8px 13px;font-family:var(--f);font-size:calc(12px * var(--fs-scale));font-weight:600;color:var(--color-text-secondary);background:var(--color-background-primary);outline:none">';
+  ['all','verses','quran','hadith','tafsir','refl'].forEach(function(sc){h+='<option value="'+sc+'"'+(curSearchScope===sc?' selected':'')+'>'+lbl[sc]+'</option>';});
+  h+='</select></div>';
+  if(!prem)h+='<button class="btn-p" style="margin-top:8px" onclick="paidSearch()"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5b6472" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><circle cx="10" cy="10" r="5.2"/><line x1="13.6" y1="13.6" x2="19.6" y2="19.6" stroke-width="2.6"/></svg> '+(F?'جستجو ('+PT_SEARCH+' 💎)':'Search ('+PT_SEARCH+' 💎)')+'</button>';
+  h+='</div>';
+  var th=getThemes();
+  if(th.length){h+='<div class="themes-wrap"><div class="themes-title">'+(F?'جستجو بر اساس تم':'Browse by theme')+'</div><div class="chips" id="theme-chips"></div></div>';}
+  h+='<div class="srch-res" id="srch-res">'+(prem||searchPaid?buildRes():'')+'</div>';
+  H('vw-search',h);
+  if(th.length){var ch='';th.forEach(function(t){ch+='<div class="chip'+(t==curThm?' on':'')+'" data-act="theme" data-thm="'+A(t)+'">'+E(t)+'</div>';});H('theme-chips',ch);}
+}
+function setSearchScope(v){curSearchScope=v;if(isPremium()){H('srch-res',buildRes());}else{searchPaid=false;H('srch-res','');}}
+function onSearchInputBasic(v){curQ=v;if(searchPaid){searchPaid=false;H('srch-res','');}}
+function paidSearch(){var F=prefs.lang=='fa';if(!curQ.trim()&&!curThm){toast(F?'ابتدا عبارتی بنویس یا یک تم انتخاب کن':'Type something or pick a theme first');return;}if(!spendPts(PT_SEARCH)){toast(F?'💎 امتیاز کافی نداری (نیاز: '+PT_SEARCH+')':'Not enough 💎 (need '+PT_SEARCH+')');return;}searchPaid=true;H('srch-res',buildRes());toast(F?'-'+PT_SEARCH+' 💎 · نتایج این جستجو نمایش داده شد':'-'+PT_SEARCH+' 💎 · Results shown',2600);}
+function normalizeFa(s){return String(s||'').replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g,'').replace(/[إأآٱ]/g,'ا').replace(/ي/g,'ی').replace(/ك/g,'ک').replace(/ة/g,'ه').replace(/[\u200c\u200f\u200e]/g,' ').toLowerCase();}
+function textMatchesQuery(pool,q){var qn=normalizeFa(q).trim();if(!qn)return true;return normalizeFa(pool).indexOf(qn)>=0;}
+function resHdr(count,F){return'<div class="res-hdr"><span>'+count+(F?' نتیجه':' results')+'</span><span class="res-clr" data-act="clearsrch">'+(F?'× پاک':'× Clear')+'</span></div>';}
+function noRes(F){return'<div class="no-res">'+(F?'نتیجه\u200cای یافت نشد':'No results')+'</div>';}
+function themeOk(v,th){return!th||(v.themes||[]).indexOf(th)>=0;}
+function buildResVerseItems(q,th,F,scope){
+  var numQ=q.match(/^\d+$/)?parseInt(q):null;
+  var res=verses.filter(function(v){
+    if(!v.num&&!v.n)return false;var n=String(v.num||v.n||'');
+    if(!themeOk(v,th))return false;
+    if(q){
+      var numMatch=numQ!=null&&parseInt(n)===numQ;
+      var pool=textPoolVerseDirect(v,F);
+      var textMatch=textMatchesQuery(pool,q);
+      if(!numMatch&&!textMatch)return false;
+    }
+    return true;
+  });
+  var h='';
+  res.slice(0,25).forEach(function(v){var n=String(v.num||v.n||'');var lns=(v.text||v.t||'').split('\n').filter(Boolean);var mn=F?(v.maana||v.fa):(v.maanaEn||v.en);var ud=gv(n);
+    var jumpType='verse';
+    if(q&&q.trim()){
+      var textOnlyMatch=textMatchesQuery(v.text||v.t||'',q);
+      var meanOnlyMatch=mn&&textMatchesQuery(mn,q);
+      if(!textOnlyMatch&&meanOnlyMatch)jumpType='meaning';
+    }
+    h+='<div class="vcard-r"><div class="vcard-r-hdr"><span class="vcard-r-n">'+(F?'بیت ':'Couplet ')+E(n)+'</span><button class="va'+(ud.liked?' lk':'')+'" id="lk_'+E(n)+'" onclick="tLike(\''+E(n)+'\')" style="width:26px;height:26px;font-size:calc(14px * var(--fs-scale))">'+(ud.liked?'❤️':'🤍')+'</button></div><div class="vcard-r-body"><div class="vcard-r-txt allow-copy">'+lns.map(function(l){return hl(l.trim(),q);}).join('<br>')+'</div>';if(mn)h+='<div class="vcard-r-mn" style="direction:'+(F?'rtl':'ltr')+';text-align:center">'+hl(mn,q)+'</div>';if((v.themes||[]).length){h+='<div class="vr-chips">';(v.themes||[]).slice(0,4).forEach(function(t){h+='<span class="mini-tag" data-act="theme" data-thm="'+A(t)+'">'+E(t)+'</span>';});h+='</div>';}h+='<div class="vr-acts"><button class="vr-btn" onclick="shareVerse(\''+E(n)+'\')">📤</button><button class="vr-btn" onclick="goToVerseSection(\''+E(n)+'\',\''+jumpType+'\',null)">'+(F?'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg> برو به بیت':'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg> Go to couplet')+'</button></div></div></div>';});
+  return{count:res.length,html:h};
+}
+function textPoolVerseDirect(v,F){return (v.text||v.t||'')+' '+(F?(v.maana||v.fa||''):(v.maanaEn||v.en||''));}
+function textPoolAll(v,F){var qhA=getQH(v);var pool=(v.text||v.t||'')+' '+(F?(v.maana||v.fa||''):(v.maanaEn||v.en||''))+' '+(v.tafsir||v.tf||'')+' '+(v.tafsirEn||v.te||'');qhA.qs.forEach(function(s){pool+=' '+(s.textAr||s.ar||'')+' '+(F?(s.note||s.fa||s.noteFa||''):(s.noteEn||s.en||''));});qhA.hs.forEach(function(s){pool+=' '+(s.textAr||s.ar||'')+' '+(F?(s.note||s.fa||s.noteFa||''):(s.noteEn||s.en||''));});(v.reflections||[]).forEach(function(q){pool+=' '+(F?(q.fa||''):(q.en||''));});return pool;}
+function collectAllRefsForVerse(v,F){
+  var out=[];var seen={};
+  getQH(v).qs.forEach(function(s){var k='q_'+(s.surah||s.s||'')+'_'+(s.ayah||s.a||'');if(seen[k])return;seen[k]=1;out.push({ref:s,isH:false,origin:'qh',key:sourceKey('quran',s)});});
+  getQH(v).hs.forEach(function(s){var k='h_'+(s.book||s.b||'')+'_'+(s.num||'');if(seen[k])return;seen[k]=1;out.push({ref:s,isH:true,origin:'qh',key:sourceKey('hadith',s)});});
+  (v.tafsirRefs||v.refs||[]).forEach(function(r){var isH=r.type==='hadith';var k=(isH?'h_'+(r.book||r.b||'')+'_'+(r.num||''):'q_'+(r.surah||r.s||'')+'_'+(r.ayah||r.a||''));if(seen[k])return;seen[k]=1;out.push({ref:r,isH:isH,origin:'tafsir',key:sourceKey(isH?'hadith':'quran',r)});});
+  (v.reflections||[]).forEach(function(rq){(rq.refs||[]).forEach(function(r){var isH=r.type==='hadith';var k=(isH?'h_'+(r.book||r.b||'')+'_'+(r.num||''):'q_'+(r.surah||r.s||'')+'_'+(r.ayah||r.a||''));if(seen[k])return;seen[k]=1;out.push({ref:r,isH:isH,origin:'refl',key:sourceKey(isH?'hadith':'quran',r)});});});
+  return out;
+}
+function buildResQuranItems(q,th,F){
+  var items=[];
+  verses.forEach(function(v){var n=String(v.num||v.n||'');if(!n||!themeOk(v,th))return;collectAllRefsForVerse(v,F).forEach(function(item){if(item.isH)return;var s=item.ref;var pool=(s.textAr||s.ar||'')+' '+(F?(s.note||s.fa||s.noteFa||''):(s.noteEn||s.en||''));if(q&&!textMatchesQuery(pool,q))return;items.push({n:n,ref:s,origin:item.origin,key:item.key});});});
+  var h='';items.slice(0,40).forEach(function(item){var needPopup=item.origin!=='qh';h+='<div class="lib-card">'+mkSrc(item.ref,'quran',F,q)+'<div class="lib-acts"><button class="lib-btn" onclick="shareSourceByKey(\'quran\',\''+item.key+'\')">📤</button><button class="lib-btn" onclick="goToVerseSection(\''+E(item.n)+'\',\''+item.origin+'\','+(needPopup?'\''+item.key+'\'':'null')+')">'+(F?'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg> برو به بیت':'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg> Go to couplet')+'</button></div></div>';});
+  return{count:items.length,html:h};
+}
+function buildResHadithItems(q,th,F){
+  var items=[];
+  verses.forEach(function(v){var n=String(v.num||v.n||'');if(!n||!themeOk(v,th))return;collectAllRefsForVerse(v,F).forEach(function(item){if(!item.isH)return;var s=item.ref;var pool=(s.textAr||s.ar||'')+' '+(F?(s.note||s.fa||s.noteFa||''):(s.noteEn||s.en||''));if(q&&!textMatchesQuery(pool,q))return;items.push({n:n,ref:s,origin:item.origin,key:item.key});});});
+  var h='';items.slice(0,40).forEach(function(item){var needPopup=item.origin!=='qh';h+='<div class="lib-card">'+mkSrc(item.ref,'hadith',F,q)+'<div class="lib-acts"><button class="lib-btn" onclick="shareSourceByKey(\'hadith\',\''+item.key+'\')">📤</button><button class="lib-btn" onclick="goToVerseSection(\''+E(item.n)+'\',\''+item.origin+'\','+(needPopup?'\''+item.key+'\'':'null')+')">'+(F?'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg> برو به بیت':'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg> Go to couplet')+'</button></div></div>';});
+  return{count:items.length,html:h};
+}
+function buildResTafsirItems(q,th,F){
+  var items=[];
+  verses.forEach(function(v){var n=String(v.num||v.n||'');if(!n||!themeOk(v,th))return;var tafsir=F?(v.tafsir||v.tf):(v.tafsirEn||v.te);if(!tafsir)return;var plain=tafsir.replace(/\[\d+\]/g,'');if(q&&!textMatchesQuery(plain,q))return;items.push({n:n,text:plain});});
+  var h='';items.slice(0,40).forEach(function(item){h+='<div class="lib-card"><div class="lib-n">'+(F?'تفسیر — بیت ':'Commentary — Couplet ')+E(item.n)+'</div><div class="lib-note" style="background:var(--tafsir-l);direction:'+(F?'rtl':'ltr')+';text-align:'+(F?'right':'left')+'">'+hl(item.text,q)+'</div><div class="lib-acts"><button class="lib-btn" onclick="goToVerseSection(\''+E(item.n)+'\',\'tafsir\',null)">'+(F?'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg> برو به بیت':'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg> Go to couplet')+'</button></div></div>';});
+  return{count:items.length,html:h};
+}
+function buildResReflItems(q,th,F){
+  var items=[];
+  verses.forEach(function(v){var n=String(v.num||v.n||'');if(!n||!themeOk(v,th))return;(v.reflections||[]).forEach(function(rq,qi){var txt=F?(rq.fa||''):(rq.en||'');if(!txt)return;if(q&&!textMatchesQuery(txt,q))return;items.push({n:n,qi:qi,fa:rq.fa||'',en:rq.en||'',refs:rq.refs||[],date:''});});});
+  var h='';items.slice(0,40).forEach(function(item){h+=reflCard(item,F,q);});
+  return{count:items.length,html:h};
+}
+function buildResVerseCards(q,th,F,scope){var r=buildResVerseItems(q,th,F,scope);if(!r.count)return noRes(F);return resHdr(r.count,F)+r.html;}
+function buildResQuran(q,th,F){var r=buildResQuranItems(q,th,F);if(!r.count)return noRes(F);return resHdr(r.count,F)+r.html;}
+function buildResHadith(q,th,F){var r=buildResHadithItems(q,th,F);if(!r.count)return noRes(F);return resHdr(r.count,F)+r.html;}
+function buildResTafsir(q,th,F){var r=buildResTafsirItems(q,th,F);if(!r.count)return noRes(F);return resHdr(r.count,F)+r.html;}
+function buildResRefl(q,th,F){var r=buildResReflItems(q,th,F);if(!r.count)return noRes(F);return resHdr(r.count,F)+r.html;}
+function buildResAll(q,th,F){
+  var sections=[
+    {icon:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg>',label:F?'ابیات':'Couplets',r:buildResVerseItems(q,th,F,'all')},
+    {icon:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#085041" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,8 C6.4,6.8 8.8,6.8 11.2,8 L11.2,18.4 C8.8,17.4 6.4,17.4 3.2,18.4 Z"/><path d="M20.8,8 C17.6,6.8 15.2,6.8 12.8,8 L12.8,18.4 C15.2,17.4 17.6,17.4 20.8,18.4 Z"/><line x1="12" y1="8" x2="12" y2="18.4"/></svg>',label:F?'آیه\u200cها':'Ayahs',r:buildResQuranItems(q,th,F)},
+    {icon:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#633806" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><ellipse cx="8.4" cy="12" rx="4.4" ry="3" transform="rotate(-18 8.4 12)"/><ellipse cx="15.6" cy="12" rx="4.4" ry="3" transform="rotate(18 15.6 12)"/></svg>',label:F?'حدیث\u200cها':'Hadiths',r:buildResHadithItems(q,th,F)},
+    {icon:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg>',label:F?'تفسیرها':'Commentaries',r:buildResTafsirItems(q,th,F)},
+    {icon:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#4C3A8C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M12,18.8 C5.2,14 5.2,7.6 9.2,6.8 C10.8,6.4 12,7.6 12,8.8 C12,7.6 13.2,6.4 14.8,6.8 C18.8,7.6 18.8,14 12,18.8 Z"/><path d="M12,1.2 C14,3.2 14,5.2 12,7.2 C10,5.2 10,3.2 12,1.2 Z"/></svg>',label:F?'تدبرها':'Reflections',r:buildResReflItems(q,th,F)}
+  ];
+  var total=0;sections.forEach(function(s){total+=s.r.count;});
+  if(!total)return noRes(F);
+  var h=resHdr(total,F);
+  sections.forEach(function(s){
+    if(!s.r.count)return;
+    h+='<div style="padding:12px 12px 4px;font-size:calc(11px * var(--fs-scale));font-weight:700;color:var(--color-text-tertiary)">'+s.icon+' '+s.label+' ('+s.r.count+')</div>';
+    h+=s.r.html;
+  });
+  return h;
+}
+function buildRes(){
+  var F=prefs.lang=='fa';var q=curQ.trim(),th=curThm;if(!q&&!th)return'';
+  var scope=curSearchScope||'all';
+  if(scope==='quran')return buildResQuran(q,th,F);
+  if(scope==='hadith')return buildResHadith(q,th,F);
+  if(scope==='tafsir')return buildResTafsir(q,th,F);
+  if(scope==='refl')return buildResRefl(q,th,F);
+  if(scope==='verses')return buildResVerseCards(q,th,F,'verses');
+  return buildResAll(q,th,F);
+}
+function doSrch(q){curQ=q;clearTimeout(srchTimer);srchTimer=setTimeout(function(){H('srch-res',buildRes());},300);}
+function setThm(t){curThm=curThm==t?'':t;searchPaid=false;renderSearch();}
+function clearSrch(){curQ='';curThm='';searchPaid=false;renderSearch();}
+function goToVerseSection(n,secType,matchKey){
+  var li=findLi(n);if(li<0)return;
+  if(!isOpen(li)){var l=lessons[li];var F=prefs.lang=='fa';var title=F?(l.title||l.t):(l.titleEn||l.e||l.title||l.t);openUnlockSheet('lesson',li,title||'');return;}
+  gT('read');
+  setTimeout(function(){
+    focusedLesson=li;render();focusedLesson=null;
+    setTimeout(function(){
+      var container=(secType==='meaning')?($('vm_'+n)||$('vt_'+n)):(secType&&secType!=='verse')?$('sec_'+n+'_'+secType):($('vt_'+n)||$('vc_'+n));
+      if(!container)container=$('vc_'+n);
+      if(container){
+        container.scrollIntoView({behavior:matchKey?'auto':'smooth',block:'center'});
+        highlightJumpTarget(container);
+        if(matchKey){
+          setTimeout(function(){tryOpenPopupByKey(n,matchKey,0);},150);
+        }
+      }
+    },220);
+  },220);
+}
+function highlightJumpTarget(el){
+  document.querySelectorAll('.jump-highlight').forEach(function(x){x.classList.remove('jump-highlight');});
+  void el.offsetWidth;
+  el.classList.add('jump-highlight');
+  setTimeout(function(){el.classList.remove('jump-highlight');},2600);
+}
+function tryOpenPopupByKey(n,matchKey,attempt){
+  var root=$('vc_'+n)||$('vw-read');
+  var trefs=root?root.querySelectorAll('.tref[data-src]'):[];
+  var found=null;
+  for(var i=0;i<trefs.length;i++){if(trefs[i].getAttribute('data-src')===matchKey){found=trefs[i];break;}}
+  if(!found){
+    var all=document.querySelectorAll('#vw-read .tref[data-src]');
+    for(var j=0;j<all.length;j++){if(all[j].getAttribute('data-src')===matchKey){found=all[j];break;}}
+  }
+  if(found){found.click();return;}
+  if(attempt<3){setTimeout(function(){tryOpenPopupByKey(n,matchKey,attempt+1);},350);}
+}
+function goToVerse(n){goToVerseSection(n,null,null);}
+function goToLessonIdx(li){if(li<0||!isOpen(li)){return;}gT('read');setTimeout(function(){focusedLesson=li;render();focusedLesson=null;setTimeout(function(){var cards=document.querySelectorAll('.lcard');var el=cards[li];if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},200);},200);}
+function findLi(n){for(var i=0;i<lessons.length;i++){var ids=lessons[i].verseIds||lessons[i].v||[];for(var k=0;k<ids.length;k++){var v=resolveVerse(ids[k]);if(v&&String(v.num||v.n)===String(n))return i;}}return -1;}
+
+function getDailySBR(){if(extraSBRVerse)return extraSBRVerse;var log=refData.sbrLog||[];if(!log.length)return null;var pick=log[Math.floor(new Date().getTime()/86400000)%log.length];return resolveVerse(pick.n);}
+function buyRandomSBR(){var F=prefs.lang=='fa';var log=refData.sbrLog||[];if(log.length<1){toast(F?'هنوز شاه‌بیتی از محتوای مطالعه‌شده موجود نیست':'No studied Master Couplet available yet');return;}if(!spendPts(PT_SBR)){toast(F?'💎 امتیاز کافی نداری (نیاز: '+PT_SBR+')':'Not enough 💎 (need '+PT_SBR+')');return;}var cur=getDailySBR();var pick,tries=0;do{pick=log[Math.floor(Math.random()*log.length)];tries++;}while(log.length>1&&cur&&String(pick.n)===String(cur.num||cur.n)&&tries<20);extraSBRVerse=resolveVerse(pick.n);renderSBR();toast(F?'-'+PT_SBR+' 💎 · شاه\u200cبیت جدید نمایش داده شد':'-'+PT_SBR+' 💎 · New verse shown');}
+function renderSBR(){var F=prefs.lang=='fa';if(!hasContent){H('vw-sbr','<div class="empty-st"><div style="font-size:calc(48px * var(--fs-scale));margin-bottom:12px"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#8B6000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><rect x="5.2" y="16" width="13.6" height="2.8" rx="0.8"/><path d="M5.2,16 L6.8,7.2 L9.6,12 L12,5.6 L14.4,12 L17.2,7.2 L18.8,16 Z"/></svg></div><div style="font-size:calc(14px * var(--fs-scale));font-weight:600;color:var(--color-text-secondary)">'+(F?'ابتدا محتوا را بارگذاری کن':'Load content first')+'</div></div>');return;}var v=getDailySBR();if(!v){H('vw-sbr','<div class="empty-st"><div style="font-size:calc(48px * var(--fs-scale));margin-bottom:12px"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#8B6000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><rect x="5.2" y="16" width="13.6" height="2.8" rx="0.8"/><path d="M5.2,16 L6.8,7.2 L9.6,12 L12,5.6 L14.4,12 L17.2,7.2 L18.8,16 Z"/></svg></div><div style="font-size:calc(14px * var(--fs-scale));font-weight:600;color:var(--color-text-secondary)">'+(F?'هنوز شاه‌بیتی از محتوای مطالعه‌شده موجود نیست':'No studied Master Couplet yet')+'</div></div>');return;}var n=String(v.num||v.n||'');var lns=(v.text||v.t||'').split('\n').filter(Boolean);var shahEn=v.shahBeytEn||v.se||'';var maana=v.maana||v.fa||'';var today=new Date().toLocaleDateString(F?'fa-IR':'en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});var h='<div class="sbr-card"><div class="sbr-hdr"><span class="sbr-hdr-t"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#8B6000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><rect x="5.2" y="16" width="13.6" height="2.8" rx="0.8"/><path d="M5.2,16 L6.8,7.2 L9.6,12 L12,5.6 L14.4,12 L17.2,7.2 L18.8,16 Z"/></svg> '+(F?'شاه بیت روز':'Daily Master Couplet')+'</span><span class="sbr-hdr-d">'+today+'</span></div><div class="sbr-body"><div class="sbr-verse allow-copy">'+lns.map(function(l){return E(l.trim());}).join('<br>')+'</div>';if(F&&maana)h+='<div class="sbr-mean" style="direction:rtl;text-align:right">'+E(maana)+'</div>';if(!F&&shahEn){var sl=shahEn.split('\n').filter(function(l){return l.trim();});h+='<div class="sbr-en" style="direction:ltr;text-align:left">'+sl.map(function(l){return'<div class="sbr-en-line">'+E(l.trim())+'</div>';}).join('')+'</div>';}h+='<div class="lib-acts"><button class="lib-btn" onclick="shareVerse(\''+E(n)+'\')">📤</button><button class="lib-btn" onclick="goToVerseSection(\''+E(n)+'\',\'verse\',null)">'+(F?'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg> برو به درس':'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg> Go to lesson')+'</button></div></div></div>';h+='<div style="padding:0 12px;margin-top:10px"><button class="btn-p" onclick="buyRandomSBR()">🎲 '+(F?'شاه\u200cبیت تصادفی دیگر ('+PT_SBR+' 💎)':'Another Master Couplet ('+PT_SBR+' 💎)')+'</button></div>';H('vw-sbr',h);}
+
+function renderLiked(){var F=prefs.lang=='fa';var lk=Object.keys(userData).filter(function(k){return userData[k]&&userData[k].liked;});if(!lk.length){H('vw-liked','<div class="empty-st"><div style="font-size:calc(48px * var(--fs-scale));margin-bottom:12px">❤️</div><div style="font-size:calc(14px * var(--fs-scale));font-weight:600;color:var(--color-text-secondary);margin-bottom:6px">'+(F?'هنوز بیتی لایک نکردی':'No liked verses yet')+'</div></div>');return;}var h='<div style="padding:10px 14px 0;font-size:calc(11px * var(--fs-scale));font-weight:700;color:var(--color-text-tertiary)">'+lk.length+(F?' بیت لایک\u200cشده':' liked verses')+'</div>';lk.forEach(function(n){var v=verses.find(function(x){return String(x.num||x.n)==n;});if(!v)return;var lns=(v.text||v.t||'').split('\n').filter(Boolean);var mn=F?(v.maana||v.fa):(v.maanaEn||v.en);var note=gv(n).note||'';h+='<div class="lib-card"><div class="lib-n">'+(F?'بیت ':'Couplet ')+E(n)+'</div><div class="lib-t allow-copy">'+lns.map(function(l){return E(l.trim());}).join('<br>')+'</div>';if(mn)h+='<div class="lib-m" style="direction:'+(F?'rtl':'ltr')+';text-align:center">'+E(mn)+'</div>';if(note)h+='<div class="lib-note" style="direction:'+(F?'rtl':'ltr')+';text-align:'+(F?'right':'left')+'">📝 '+E(note)+'</div>';h+='<div class="lib-acts"><button class="lib-btn" onclick="shareVerse(\''+E(n)+'\')">📤</button><button class="lib-btn" onclick="goToVerse(\''+E(n)+'\')">'+(F?'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg> برو به بیت':'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg> Go to couplet')+'</button><button class="lib-btn r" onclick="tLike(\''+E(n)+'\')">💔</button></div></div>';});H('vw-liked',h);}
+
+function renderNotes(){var F=prefs.lang=='fa';var h='<div class="ntabs"><button class="ntab'+(curNoteTab=='verse'?' on':'')+'" onclick="setNoteTab(\'verse\')">'+(F?'📝 یادداشت بیت\u200cها':'📝 Couplet notes')+'</button><button class="ntab'+(curNoteTab=='daily'?' on':'')+'" onclick="setNoteTab(\'daily\')">'+(F?'🗓 یادداشت روزانه':'🗓 Daily notes')+'</button></div>';h+='<div id="notes-sub"></div>';H('vw-notes',h);renderNotesSub();}
+function setNoteTab(t){curNoteTab=t;renderNotes();}
+function renderNotesSub(){if(curNoteTab=='verse')renderVerseNotes();else renderDailyNotes();}
+function renderVerseNotes(){var F=prefs.lang=='fa';var noted=Object.keys(userData).filter(function(k){return userData[k]&&userData[k].note&&userData[k].note.trim();});if(!noted.length){H('notes-sub','<div class="empty-st"><div style="font-size:calc(48px * var(--fs-scale));margin-bottom:12px">📝</div><div style="font-size:calc(14px * var(--fs-scale));font-weight:600;color:var(--color-text-secondary);margin-bottom:6px">'+(F?'هنوز یادداشتی ننوشتی':'No notes yet')+'</div></div>');return;}var h='<div style="padding:10px 14px 0;font-size:calc(11px * var(--fs-scale));font-weight:700;color:var(--color-text-tertiary)">'+noted.length+(F?' یادداشت':' notes')+'</div>';noted.forEach(function(n){var v=verses.find(function(x){return String(x.num||x.n)==n;});var lns=v?(v.text||v.t||'').split('\n').filter(Boolean):[];h+='<div class="note-card"><div class="note-card-hdr"><span class="note-card-n">📝 '+(F?'یادداشت بیت ':'Note — Couplet ')+E(n)+'</span></div><div class="note-card-body">';if(lns.length)h+='<div class="note-card-verse allow-copy">'+lns.map(function(l){return E(l.trim());}).join('<br>')+'</div>';h+='<div class="note-card-txt" style="direction:'+(F?'rtl':'ltr')+';text-align:'+(F?'right':'left')+'">'+E(userData[n].note)+'</div><div class="lib-acts" style="margin-top:8px"><button class="lib-btn" onclick="shareVerse(\''+E(n)+'\')">📤</button><button class="lib-btn" onclick="goToVerse(\''+E(n)+'\')">'+(F?'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg> برو به بیت':'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg> Go to couplet')+'</button><button class="lib-btn r" onclick="delNote(\''+E(n)+'\')">📝</button></div></div></div>';});H('notes-sub',h);}
+function delNote(n){if(userData[n])userData[n].note='';sv(UK,userData);renderVerseNotes();}
+function renderDailyNotes(){var F=prefs.lang=='fa';var today=todayStr();var txt=dailyNotes[today]||'';var h='<div class="daily-note-editor"><div class="note-lbl">'+(F?'📝 یادداشت امروز':'📝 Today\'s note')+'</div><textarea class="note-ta" id="dn-today" rows="4" style="direction:'+(F?'rtl':'ltr')+';text-align:'+(F?'right':'left')+'" placeholder="'+(F?'امروز چه نکته\u200cای برایت مهم بود؟':'What stood out to you today?')+'" oninput="onDailyNote(this.value)">'+E(txt)+'</textarea><div class="note-saved" id="dn-saved"></div></div>';var dates=Object.keys(dailyNotes).filter(function(d){return dailyNotes[d]&&dailyNotes[d].trim()&&d!==today;}).sort().reverse();if(dates.length){h+='<div style="padding:14px 14px 0;font-size:calc(11px * var(--fs-scale));font-weight:700;color:var(--color-text-tertiary)">'+(F?'یادداشت\u200cهای قبلی':'Previous entries')+'</div>';dates.forEach(function(d){h+='<div class="note-card"><div class="note-card-hdr"><span class="note-card-n">🗓 '+E(d)+'</span></div><div class="note-card-body"><div class="note-card-txt" style="direction:'+(F?'rtl':'ltr')+';text-align:'+(F?'right':'left')+'">'+E(dailyNotes[d])+'</div></div></div>';});}else if(!txt){h+='<div class="empty-st"><div style="font-size:calc(40px * var(--fs-scale));margin-bottom:10px">🗓</div><div style="font-size:calc(13px * var(--fs-scale));color:var(--color-text-tertiary)">'+(F?'هنوز یادداشت روزانه\u200cای ننوشتی':'No daily notes yet')+'</div></div>';}H('notes-sub',h);}
+function onDailyNote(val){dailyNotes[todayStr()]=val;clearTimeout(noteTimers['__daily']);noteTimers['__daily']=setTimeout(function(){sv(DK,dailyNotes);var i=$('dn-saved');if(i){i.textContent='✓';setTimeout(function(){var j=$('dn-saved');if(j)j.textContent='';},1500);}},700);}
+
+function gT(t){curTab=t;ALL_VIEWS.forEach(function(x){var vw=$('vw-'+x);if(vw)vw.className='view'+(x==t?' on':'');});NAV_TABS.forEach(function(x){var nb=$('nb-'+x);if(nb)nb.className='nb'+(x=='sbr'?' ctr':'')+(x==t?' on':'');});if(t!=='read')$('SA').scrollTop=0;markAct();if(t=='search')renderSearch();else if(t=='sbr')renderSBR();else if(t=='refl')renderReflTab();else if(t=='liked')renderLiked();else if(t=='notes')renderNotes();else if(t=='quran')renderQuranTab();else if(t=='hadith')renderHadithTab();}
+
+function renderReflTab(){var F=prefs.lang=='fa';var h='<div class="ntabs"><button class="ntab'+(curReflTab=='today'?' on':'')+'" onclick="setReflTab(\'today\')">'+(F?'امروز':'Today')+'</button><button class="ntab'+(curReflTab=='archive'?' on':'')+'" onclick="setReflTab(\'archive\')">'+(F?'آرشیو':'Archive')+'</button></div>';h+='<div id="refl-sub"></div>';H('vw-refl',h);renderReflSub();}
+function setReflTab(t){curReflTab=t;renderReflTab();}
+function renderReflSub(){if(curReflTab=='today')renderReflToday();else renderReflArchive();}
+function getDailyRefl(){if(extraReflPick)return extraReflPick;var log=refData.log||[];if(!log.length)return null;return log[Math.floor(new Date().getTime()/86400000)%log.length];}
+function buyRandomRefl(){var F=prefs.lang=='fa';var log=refData.log||[];if(log.length<1){toast(F?'هنوز تدبری از محتوای مطالعه‌شده موجود نیست':'No studied reflection available yet');return;}if(!spendPts(PT_SBR)){toast(F?'💎 امتیاز کافی نداری (نیاز: '+PT_SBR+')':'Not enough 💎 (need '+PT_SBR+')');return;}var cur=getDailyRefl();var pick,tries=0;do{pick=log[Math.floor(Math.random()*log.length)];tries++;}while(log.length>1&&cur&&pick.n===cur.n&&pick.qi===cur.qi&&tries<20);extraReflPick=pick;renderReflSub();toast(F?'-'+PT_SBR+' 💎 · تدبر جدید نمایش داده شد':'-'+PT_SBR+' 💎 · New reflection shown');}
+function reflCard(r,F,hq){var markers='';(r.refs||[]).forEach(function(rf,rfi){var k='rtd_'+r.n+'_'+r.qi+'_'+rfi;refMap[k]=rf;var isH=rf.type==='hadith';markers+=' <span class="tref '+(isH?'h':'q')+'" data-key="'+k+'" onclick="showRefPop(this,\''+k+'\')">'+(rfi+1)+'</span>';});var txt=F?(r.fa||''):(r.en||'');var h='<div class="lib-card"><div class="lib-n"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#4C3A8C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M12,18.8 C5.2,14 5.2,7.6 9.2,6.8 C10.8,6.4 12,7.6 12,8.8 C12,7.6 13.2,6.4 14.8,6.8 C18.8,7.6 18.8,14 12,18.8 Z"/><path d="M12,1.2 C14,3.2 14,5.2 12,7.2 C10,5.2 10,3.2 12,1.2 Z"/></svg> '+(F?'بیت ':'Couplet ')+E(r.n)+' · '+E(r.date)+'</div><div class="lib-note" style="background:var(--refl-bg);border:0.5px solid var(--refl-bd);direction:'+(F?'rtl':'ltr')+';text-align:'+(F?'right':'left')+'">'+hl(txt,hq)+markers+'</div>';h+='<div class="lib-acts"><button class="lib-btn" onclick="shareReflByKey(\''+E(r.n)+'\','+r.qi+')">📤</button><button class="lib-btn" onclick="goToVerseSection(\''+E(r.n)+'\',\'refl\',null)">'+(F?'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg> برو به بیت':'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg> Go to couplet')+'</button></div></div>';return h;}
+function renderReflToday(){var F=prefs.lang=='fa';var r=getDailyRefl();if(!r){H('refl-sub','<div class="empty-st"><div style="font-size:calc(48px * var(--fs-scale));margin-bottom:12px"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#4C3A8C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M12,18.8 C5.2,14 5.2,7.6 9.2,6.8 C10.8,6.4 12,7.6 12,8.8 C12,7.6 13.2,6.4 14.8,6.8 C18.8,7.6 18.8,14 12,18.8 Z"/><path d="M12,1.2 C14,3.2 14,5.2 12,7.2 C10,5.2 10,3.2 12,1.2 Z"/></svg></div><div style="font-size:calc(14px * var(--fs-scale));font-weight:600;color:var(--color-text-secondary);margin-bottom:6px">'+(F?'هنوز تدبری از محتوای مطالعه\u200cشده موجود نیست':'No studied reflection yet')+'</div></div>');return;}var h='<div style="padding:10px 14px 0;font-size:calc(11px * var(--fs-scale));font-weight:700;color:var(--color-text-tertiary)">'+(F?'تدبر امروز':"Today's reflection")+'</div>'+reflCard(r,F);h+='<div style="padding:0 12px;margin-top:10px"><button class="btn-p" onclick="buyRandomRefl()">🎲 '+(F?'تدبر تصادفی دیگر ('+PT_SBR+' 💎)':'Another random reflection ('+PT_SBR+' 💎)')+'</button></div>';H('refl-sub',h);}
+function renderReflArchive(){var F=prefs.lang=='fa';if(!refData.log.length){H('refl-sub','<div class="empty-st"><div style="font-size:calc(48px * var(--fs-scale));margin-bottom:12px"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#4C3A8C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M12,18.8 C5.2,14 5.2,7.6 9.2,6.8 C10.8,6.4 12,7.6 12,8.8 C12,7.6 13.2,6.4 14.8,6.8 C18.8,7.6 18.8,14 12,18.8 Z"/><path d="M12,1.2 C14,3.2 14,5.2 12,7.2 C10,5.2 10,3.2 12,1.2 Z"/></svg></div><div style="font-size:calc(14px * var(--fs-scale));font-weight:600;color:var(--color-text-secondary);margin-bottom:6px">'+(F?'هنوز تدبری جمع\u200cآوری نشده':'No reflection collected yet')+'</div></div>');return;}var h='<div style="padding:10px 14px 0;font-size:calc(11px * var(--fs-scale));font-weight:700;color:var(--color-text-tertiary)">'+refData.log.length+(F?' تدبر جمع\u200cآوری\u200cشده':' reflection collected')+'</div>';refData.log.forEach(function(r){if(F?r.fa:r.en)h+=reflCard(r,F);});H('refl-sub',h);}
+
+function shareSourceByKey(type,key){var log=type==='hadith'?(refData.hadithLog||[]):(refData.quranLog||[]);var item=log.find(function(x){return x.key===key;});if(!item)return;var F=prefs.lang=='fa';var s=item.ref;var isH=type==='hadith';var su=s.surah||s.s||'',ay=s.ayah||s.a||'',bk=s.book||s.b||'',nm=s.num||'';var note=F?(s.note||s.fa||s.noteFa):(s.noteEn||s.en);var ar=s.textAr||s.ar||'';var refLabel=isH?(bk+(nm?' : '+nm:'')):(F?'سوره '+su+'، آیه '+ay:'Surah '+su+', Ayah '+ay);var t=(isH?(F?'حدیث — ':'Hadith — '):(F?'آیه — ':'Ayah — '))+refLabel;if(ar)t+='\n\n'+ar;if(note)t+='\n\n'+note;t+=shareSignature(F);if(navigator.share)navigator.share({text:t}).catch(function(){});else{try{navigator.clipboard.writeText(t);toast(F?'کپی شد ✓':'Copied ✓');}catch(e){}}}
+function sourceCard(item,type,F){var needPopup=item.origin&&item.origin!=='qh';var h='<div class="lib-card">';h+=mkSrc(item.ref,type,F);h+='<div class="lib-acts"><button class="lib-btn" onclick="shareSourceByKey(\''+type+'\',\''+item.key+'\')">📤</button><button class="lib-btn" onclick="goToVerseSection(\''+E(item.n)+'\',\''+(item.origin||'qh')+'\','+(needPopup?'\''+item.key+'\'':'null')+')">'+(F?'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg> برو به بیت':'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#3C8C0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,6.4 C6.4,4.8 8.8,4.8 11.2,6.4 L11.2,18.4 C8.8,17.2 6.4,17.2 3.2,18.4 Z"/><path d="M20.8,6.4 C17.6,4.8 15.2,4.8 12.8,6.4 L12.8,18.4 C15.2,17.2 17.6,17.2 20.8,18.4 Z"/><line x1="12" y1="6.4" x2="12" y2="18.4"/></svg> Go to couplet')+'</button></div></div>';return h;}
+function renderQuranTab(){var F=prefs.lang=='fa';var h='<div class="ntabs"><button class="ntab'+(curQuranTab=='today'?' on':'')+'" onclick="setQuranTab(\'today\')">'+(F?'امروز':'Today')+'</button><button class="ntab'+(curQuranTab=='archive'?' on':'')+'" onclick="setQuranTab(\'archive\')">'+(F?'آرشیو':'Archive')+'</button></div>';h+='<div id="quran-sub"></div>';H('vw-quran',h);renderQuranSub();}
+function setQuranTab(t){curQuranTab=t;renderQuranTab();}
+function renderQuranSub(){if(curQuranTab=='today')renderQuranToday();else renderQuranArchive();}
+function getDailyQuran(){if(extraQuranPick)return extraQuranPick;var log=refData.quranLog||[];if(!log.length)return null;return log[Math.floor(new Date().getTime()/86400000)%log.length];}
+function buyRandomQuran(){var F=prefs.lang=='fa';var log=refData.quranLog||[];if(log.length<1){toast(F?'هنوز آیه‌ای از محتوای مطالعه‌شده موجود نیست':'No studied ayah available yet');return;}if(!spendPts(PT_SBR)){toast(F?'💎 امتیاز کافی نداری (نیاز: '+PT_SBR+')':'Not enough 💎 (need '+PT_SBR+')');return;}var pick=log[Math.floor(Math.random()*log.length)];extraQuranPick=pick;renderQuranSub();toast(F?'-'+PT_SBR+' 💎 · آیهٔ جدید نمایش داده شد':'-'+PT_SBR+' 💎 · New ayah shown');}
+function renderQuranToday(){var F=prefs.lang=='fa';var item=getDailyQuran();if(!item){H('quran-sub','<div class="empty-st"><div style="font-size:calc(48px * var(--fs-scale));margin-bottom:12px"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#085041" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,8 C6.4,6.8 8.8,6.8 11.2,8 L11.2,18.4 C8.8,17.4 6.4,17.4 3.2,18.4 Z"/><path d="M20.8,8 C17.6,6.8 15.2,6.8 12.8,8 L12.8,18.4 C15.2,17.4 17.6,17.4 20.8,18.4 Z"/><line x1="12" y1="8" x2="12" y2="18.4"/></svg></div><div style="font-size:calc(14px * var(--fs-scale));font-weight:600;color:var(--color-text-secondary)">'+(F?'هنوز آیه\u200cای از محتوای مطالعه\u200cشده موجود نیست':'No studied ayah yet')+'</div></div>');return;}var h='<div style="padding:10px 14px 0;font-size:calc(11px * var(--fs-scale));font-weight:700;color:var(--color-text-tertiary)">'+(F?'آیهٔ امروز':"Today's ayah")+'</div>'+sourceCard(item,'quran',F);h+='<div style="padding:0 12px;margin-top:10px"><button class="btn-p" onclick="buyRandomQuran()">🎲 '+(F?'آیهٔ تصادفی دیگر ('+PT_SBR+' 💎)':'Another random ayah ('+PT_SBR+' 💎)')+'</button></div>';H('quran-sub',h);}
+function renderQuranArchive(){var F=prefs.lang=='fa';var log=refData.quranLog||[];if(!log.length){H('quran-sub','<div class="empty-st"><div style="font-size:calc(48px * var(--fs-scale));margin-bottom:12px"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#085041" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3.2,8 C6.4,6.8 8.8,6.8 11.2,8 L11.2,18.4 C8.8,17.4 6.4,17.4 3.2,18.4 Z"/><path d="M20.8,8 C17.6,6.8 15.2,6.8 12.8,8 L12.8,18.4 C15.2,17.4 17.6,17.4 20.8,18.4 Z"/><line x1="12" y1="8" x2="12" y2="18.4"/></svg></div><div style="font-size:calc(14px * var(--fs-scale));font-weight:600;color:var(--color-text-secondary)">'+(F?'هنوز آیه\u200cای جمع\u200cآوری نشده':'No ayahs collected yet')+'</div></div>');return;}var h='<div style="padding:10px 14px 0;font-size:calc(11px * var(--fs-scale));font-weight:700;color:var(--color-text-tertiary)">'+log.length+(F?' آیه جمع\u200cآوری\u200cشده':' collected ayahs')+'</div>';log.forEach(function(item){h+=sourceCard(item,'quran',F);});H('quran-sub',h);}
+
+function renderHadithTab(){var F=prefs.lang=='fa';var h='<div class="ntabs"><button class="ntab'+(curHadithTab=='today'?' on':'')+'" onclick="setHadithTab(\'today\')">'+(F?'امروز':'Today')+'</button><button class="ntab'+(curHadithTab=='archive'?' on':'')+'" onclick="setHadithTab(\'archive\')">'+(F?'آرشیو':'Archive')+'</button></div>';h+='<div id="hadith-sub"></div>';H('vw-hadith',h);renderHadithSub();}
+function setHadithTab(t){curHadithTab=t;renderHadithTab();}
+function renderHadithSub(){if(curHadithTab=='today')renderHadithToday();else renderHadithArchive();}
+function getDailyHadith(){if(extraHadithPick)return extraHadithPick;var log=refData.hadithLog||[];if(!log.length)return null;return log[Math.floor(new Date().getTime()/86400000)%log.length];}
+function buyRandomHadith(){var F=prefs.lang=='fa';var log=refData.hadithLog||[];if(log.length<1){toast(F?'هنوز حدیثی از محتوای مطالعه‌شده موجود نیست':'No studied hadith available yet');return;}if(!spendPts(PT_SBR)){toast(F?'💎 امتیاز کافی نداری (نیاز: '+PT_SBR+')':'Not enough 💎 (need '+PT_SBR+')');return;}var pick=log[Math.floor(Math.random()*log.length)];extraHadithPick=pick;renderHadithSub();toast(F?'-'+PT_SBR+' 💎 · حدیث جدید نمایش داده شد':'-'+PT_SBR+' 💎 · New hadith shown');}
+function renderHadithToday(){var F=prefs.lang=='fa';var item=getDailyHadith();if(!item){H('hadith-sub','<div class="empty-st"><div style="font-size:calc(48px * var(--fs-scale));margin-bottom:12px"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#633806" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><ellipse cx="8.4" cy="12" rx="4.4" ry="3" transform="rotate(-18 8.4 12)"/><ellipse cx="15.6" cy="12" rx="4.4" ry="3" transform="rotate(18 15.6 12)"/></svg></div><div style="font-size:calc(14px * var(--fs-scale));font-weight:600;color:var(--color-text-secondary)">'+(F?'هنوز حدیثی از محتوای مطالعه\u200cشده موجود نیست':'No studied hadith yet')+'</div></div>');return;}var h='<div style="padding:10px 14px 0;font-size:calc(11px * var(--fs-scale));font-weight:700;color:var(--color-text-tertiary)">'+(F?'حدیث امروز':"Today's hadith")+'</div>'+sourceCard(item,'hadith',F);h+='<div style="padding:0 12px;margin-top:10px"><button class="btn-p" onclick="buyRandomHadith()">🎲 '+(F?'حدیث تصادفی دیگر ('+PT_SBR+' 💎)':'Another random hadith ('+PT_SBR+' 💎)')+'</button></div>';H('hadith-sub',h);}
+function renderHadithArchive(){var F=prefs.lang=='fa';var log=refData.hadithLog||[];if(!log.length){H('hadith-sub','<div class="empty-st"><div style="font-size:calc(48px * var(--fs-scale));margin-bottom:12px"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#633806" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><ellipse cx="8.4" cy="12" rx="4.4" ry="3" transform="rotate(-18 8.4 12)"/><ellipse cx="15.6" cy="12" rx="4.4" ry="3" transform="rotate(18 15.6 12)"/></svg></div><div style="font-size:calc(14px * var(--fs-scale));font-weight:600;color:var(--color-text-secondary)">'+(F?'هنوز حدیثی جمع\u200cآوری نشده':'No hadiths collected yet')+'</div></div>');return;}var h='<div style="padding:10px 14px 0;font-size:calc(11px * var(--fs-scale));font-weight:700;color:var(--color-text-tertiary)">'+log.length+(F?' حدیث جمع\u200cآوری\u200cشده':' collected hadiths')+'</div>';log.forEach(function(item){h+=sourceCard(item,'hadith',F);});H('hadith-sub',h);}
+
+function renderCur(){if(curTab=='read')render();else if(curTab=='search')renderSearch();else if(curTab=='sbr')renderSBR();else if(curTab=='refl')renderReflTab();else if(curTab=='liked')renderLiked();else if(curTab=='notes')renderNotes();else if(curTab=='quran')renderQuranTab();else if(curTab=='hadith')renderHadithTab();}
+
+async function initLoad(){
+  var p=await ld(PK);if(p)prefs=Object.assign(prefs,p);
+  var u=await ld(UK);var isFirstVisit=!u;if(u)userData=u;
+  var s=await ld(SK);if(s)streakData=Object.assign({streak:0,last:'',history:[],done:[],freezes:0,frozenDays:[],milestonesAwarded:[],dailyPts:{}},s);
+  var rd=await ld(RK);if(rd)refData=Object.assign({studied:{},pointed:{},log:[],pageAwarded:{},popupAwarded:{},quranLog:[],hadithLog:[],sbrLog:[],purchasedContent:{}},rd);
+  var dn=await ld(DK);if(dn)dailyNotes=dn;
+  var fb=await ld(FK);if(fb)feedbackLog=fb;
+  await loadManifest();
+  if(manifest&&manifest.books&&prefs.lastBookId!=null&&prefs.lastStoryId!=null){
+    var rBook=manifest.books.find(function(b){return b.id===prefs.lastBookId;});
+    var rStory=rBook&&rBook.stories?rBook.stories.find(function(s){return s.id===prefs.lastStoryId;}):null;
+    if(rStory){
+      try{
+        var res=await fetch(CONTENT_BASE+rStory.file,{cache:'no-store'});
+        if(res.ok){
+          var data=await res.json();
+          if(data.verses&&data.verses.length>1){
+            verses=data.verses;lessons=data.lessons||[];hasContent=true;
+            currentBookId=prefs.lastBookId;currentStoryId=prefs.lastStoryId;
+          }
+        }
+      }catch(e){}
+    }
+  }
+  buildNumIndex();applyPrefs();updateStatusBox();
+  setText('pts-num',getPts());setText('streak-num',streakData.streak);
+  markAct();render();
+  if(isFirstVisit){
+    addPts(PT_WELCOME);
+    var F=prefs.lang=='fa';
+    setTimeout(function(){toast(F?'🎉 خوش آمدی! جایزهٔ ورود: +'+PT_WELCOME+' 💎':'🎉 Welcome! Sign-up bonus: +'+PT_WELCOME+' 💎',3200);},700);
+  }
+}
+function checkReminder(){
+  if(!prefs.reminderTime)return;
+  if(!('Notification' in window))return;
+  if(Notification.permission!=='granted')return;
+  var now=new Date();
+  var hh=String(now.getHours()).padStart(2,'0');
+  var mm=String(now.getMinutes()).padStart(2,'0');
+  var cur=hh+':'+mm;
+  var today=todayStr();
+  if(cur===prefs.reminderTime&&prefs.lastNotifiedDate!==today){
+    prefs.lastNotifiedDate=today;sv(PK,prefs);
+    var F=prefs.lang=='fa';
+    var title=F?'یادآوری مطالعهٔ مثنوی':'Masnavi Study Reminder';
+    var body=F?'وقتشه چند بیت امروز رو مطالعه کنی 📖':"Time for today's couplets 📖";
+    if(navigator.serviceWorker&&navigator.serviceWorker.ready){
+      navigator.serviceWorker.ready.then(function(reg){reg.showNotification(title,{body:body,icon:'icons/icon-192.png',badge:'icons/icon-192.png'});}).catch(function(){try{new Notification(title,{body:body,icon:'icons/icon-192.png'});}catch(e){}});
+    }else{try{new Notification(title,{body:body,icon:'icons/icon-192.png'});}catch(e){}}
+  }
+}
+initLoad();
+setInterval(checkReminder,20000);
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')checkReminder();});
+</script>
+
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  });
+}
+</script>
+</body>
+</html>
